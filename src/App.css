@@ -1,38 +1,131 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Muli:wght@600&display=swap');
+
+:root {
+  --primaryColor: #F56666;
+  --darkGrey: #4C4C4C;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a {
+  text-decoration: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.page {
+  position: relative;
+  top: 150px;
+  height: 1000px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/**************/
+/*** NAVBAR ***/
+/**************/
+
+.nav-links {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-column-gap: 20px;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-items: center;
+  max-width: 1000px;
 }
 
-.App-link {
-  color: #61dafb;
+.nav-link {
+  color: var(--darkGrey);
+  text-transform: uppercase;
+  font-family: "Muli", sans-serif;
+  font-size: 13px;
+  transform: scaleY(0.95);
+  letter-spacing: 0.1em;
+  padding: 5px 0;
+
+  transition: border-bottom 0.4s;
+  border-bottom: solid 1px transparent;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav-link-underline {
+  border-bottom: solid 1px var(--darkGrey);
+}
+
+.nav-link:hover {
+  transition: border-bottom 0.2s;
+  border-bottom: solid 1px var(--darkGrey);
+}
+
+.nav-button {
+  text-transform: uppercase;
+  font-family: "Muli", sans-serif;
+  font-size: 13px;
+  transform: scaleY(0.95);
+  letter-spacing: 0.1em;
+  border: solid 1px var(--darkGrey);
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: var(--darkGrey);
+}
+
+/* nav-top */
+
+.nav-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 2;
+}
+
+.nav-top-logo-container {
+  margin-top: 20px;
+}
+
+.nav-top-logo {
+  width: 40px;
+  display: block;
+  margin: 0 auto;
+}
+
+.nav-top-name {
+  width: 150px;
+  display: block;
+  margin: 0 auto;
+}
+
+.nav-top-links {
+  margin: 25px auto;
+}
+
+/* nav-scroll */
+
+.nav-scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 6fr;
+  padding: 10px 15vw;
+  background-color: white;
+  z-index: 2;
+}
+
+.nav-scroll-logo-container {
+  justify-self: start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.nav-scroll-logo {
+  width: 40px;
+  margin-right: 20px;
+}
+
+.nav-scroll-name {
+  width: 120px;
+  margin-right: 20px;
+}
+
+.nav-scroll-links {
+  justify-self: end;
+  align-self: end;
+  padding-bottom: 5px;
+  width: 40vw;
 }
