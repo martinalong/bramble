@@ -6,7 +6,7 @@ export default class Schedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            authenticated: true,
+            authenticated: props.authenticated,
             isPatient: props.isPatient,
             id: "p00000001"
         }
@@ -15,7 +15,7 @@ export default class Schedule extends Component {
     render() {
         if (!this.state.authenticated) {
             return (
-                <Login isPatient={this.props.isPatient}/>
+                <Login isPatient={this.state.isPatient}/>
             )
         }
         return (

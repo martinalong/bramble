@@ -8,7 +8,7 @@ export default class Navbar extends Component {
         super(props);
         this.handleScroll = this.handleScroll.bind(this);
         this.state = {
-            authenticated: false,
+            authenticated: props.authenticated,
             isPatient: props.isPatient,
             scroll: false,
         }
@@ -34,31 +34,14 @@ export default class Navbar extends Component {
         }
     }
 
-    render() {
-        return (
-            <div className={this.state.scroll ? "nav-scroll" : "nav-top"}>
-                <div className={this.state.scroll ? "nav-scroll-logo-container" : "nav-top-logo-container"}>
-                    <img className={this.state.scroll ? "nav-scroll-logo" : "nav-top-logo"} src={logo} alt="bramble logo"/>
-                    <img className={this.state.scroll ? "nav-scroll-name" : "nav-top-name"} src={bramble} alt="bramble"/>
-                </div>
-                <div className={this.state.scroll ? "nav-links nav-scroll-links" : "nav-links nav-top-links"}>
-                    <NavLink className="nav-link" activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/doctors" : "/provider/patients"}>{this.state.isPatient ? "Doctors" : "Patients"}</NavLink>
-                    <NavLink className="nav-link" activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/communication" : "/provider/communication"}>Communication</NavLink>
-                    <NavLink className="nav-link" activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/appointments" : "/provider/appointments"}>{this.state.isPatient ? "Appointments" : "Schedule"}</NavLink>
-                    <NavLink className={this.state.authenticated ? "nav-link" : "nav-button"} activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/account" : "/provider/account"}>{this.state.authenticated ? "Account" : "Log in"}</NavLink>
-                </div>
-            </div>
-        )
-    }
-
      render() {
         return (
-            <div className={this.state.scroll ? "nav-scroll" : "nav-top"}>
-                <div className={this.state.scroll ? "nav-scroll-logo-container" : "nav-top-logo-container"}>
-                    <img className={this.state.scroll ? "nav-scroll-logo" : "nav-top-logo"} src={logo} alt="bramble logo"/>
-                    <img className={this.state.scroll ? "nav-scroll-name" : "nav-top-name"} src={bramble} alt="bramble"/>
+            <div className="nav">
+                <div className="nav-logo-container">
+                    <img className="nav-logo" src={logo} alt="bramble logo"/>
+                    <img className="nav-name" src={bramble} alt="bramble"/>
                 </div>
-                <div className={this.state.scroll ? "nav-links nav-scroll-links" : "nav-links nav-top-links"}>
+                <div className="nav-links">
                     <NavLink className="nav-link" activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/doctors" : "/provider/patients"}>{this.state.isPatient ? "Doctors" : "Patients"}</NavLink>
                     <NavLink className="nav-link" activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/communication" : "/provider/communication"}>Communication</NavLink>
                     <NavLink className="nav-link" activeClassName="nav-link-underline" to={this.state.isPatient ? "/patient/appointments" : "/provider/appointments"}>{this.state.isPatient ? "Appointments" : "Schedule"}</NavLink>

@@ -9,9 +9,13 @@ a {
   text-decoration: none;
 }
 
+input {
+  outline: none;
+}
+
 .page {
   position: relative;
-  top: 150px;
+  top: 70px;
   height: 1000px;
 }
 
@@ -26,16 +30,19 @@ a {
   align-items: center;
   justify-items: center;
   max-width: 1000px;
+
+  justify-self: end;
+  align-self: center;
+  padding: 5px 0px;
+  width: 40vw;
 }
 
 .nav-link {
   color: var(--darkGrey);
-  text-transform: uppercase;
   font-family: "Muli", sans-serif;
-  font-size: 13px;
-  transform: scaleY(0.95);
-  letter-spacing: 0.1em;
+  font-size: 15px;
   padding: 5px 0;
+  white-space: nowrap;
 
   transition: border-bottom 0.4s;
   border-bottom: solid 1px transparent;
@@ -51,81 +58,63 @@ a {
 }
 
 .nav-button {
-  text-transform: uppercase;
   font-family: "Muli", sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   transform: scaleY(0.95);
-  letter-spacing: 0.1em;
   border: solid 1px var(--darkGrey);
   border-radius: 5px;
   padding: 5px 10px;
   color: var(--darkGrey);
+  white-space: nowrap;
 }
 
-/* nav-top */
-
-.nav-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 2;
-}
-
-.nav-top-logo-container {
-  margin-top: 20px;
-}
-
-.nav-top-logo {
-  width: 40px;
-  display: block;
-  margin: 0 auto;
-}
-
-.nav-top-name {
-  width: 150px;
-  display: block;
-  margin: 0 auto;
-}
-
-.nav-top-links {
-  margin: 25px auto;
-}
-
-/* nav-scroll */
-
-.nav-scroll {
+.nav {
   position: fixed;
   top: 0;
-  left: 0;
+  margin: 0 auto;
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 6fr;
+  grid-template-columns: 1fr 7fr;
   padding: 10px 15vw;
   background-color: white;
   z-index: 2;
 }
 
-.nav-scroll-logo-container {
+.nav-logo-container {
   justify-self: start;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
 }
 
-.nav-scroll-logo {
-  width: 40px;
+.nav-logo {
+  height: 30px;
   margin-right: 20px;
 }
 
-.nav-scroll-name {
-  width: 120px;
+.nav-name {
+  height: 27px;
   margin-right: 20px;
 }
 
-.nav-scroll-links {
-  justify-self: end;
-  align-self: end;
-  padding-bottom: 5px;
-  width: 40vw;
+
+/*************/
+/*** LOGIN ***/
+/*************/
+
+.login-form {
+  width: 500px;
+  margin: auto;
+  border-style: solid;
+}
+
+.login-input {
+  width: 90%;
+  margin: 5px auto;
+  font-family: "Muli", sans-serif;
+  font-size: 14px;
+}
+
+.login-icon {
+  
 }
