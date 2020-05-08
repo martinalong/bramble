@@ -1,12 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Muli:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Muli:wght@400;600&display=swap');
 
 :root {
   --primaryColor: #F56666;
   --darkGrey: #4C4C4C;
+  --mediumGrey: #777777;
+  --grey: #f0f1f5;
+  --pink: #ec6b66;
+  --blue: #424e88;
+}
+
+.app {
+  background-color: var(--grey);
+  overflow-x: hidden;
 }
 
 a {
   text-decoration: none;
+  color: var(--blue);
 }
 
 input {
@@ -17,6 +27,7 @@ input {
   position: relative;
   top: 70px;
   height: 1000px;
+  background-color: var(--grey);
 }
 
 /**************/
@@ -24,12 +35,12 @@ input {
 /**************/
 
 .nav-links {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-column-gap: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
   align-items: center;
   justify-items: center;
-  max-width: 1000px;
 
   justify-self: end;
   align-self: center;
@@ -42,6 +53,7 @@ input {
   font-family: "Muli", sans-serif;
   font-size: 15px;
   padding: 5px 0;
+  margin-left: 30px;
   white-space: nowrap;
 
   transition: border-bottom 0.4s;
@@ -66,6 +78,7 @@ input {
   padding: 5px 10px;
   color: var(--darkGrey);
   white-space: nowrap;
+  margin-left: 20px;
 }
 
 .nav {
@@ -76,7 +89,7 @@ input {
   align-items: center;
   grid-template-columns: 1fr 7fr;
   padding: 10px 15vw;
-  background-color: white;
+  background-color: var(--grey);
   z-index: 2;
 }
 
@@ -103,18 +116,238 @@ input {
 /*************/
 
 .login-form {
-  width: 500px;
+  width: 400px;
   margin: auto;
-  border-style: solid;
+  padding-top: 20vh;
 }
 
-.login-input {
-  width: 90%;
-  margin: 5px auto;
+.signup-form {
+  padding-top: 5vh;
+}
+
+.login-text {
   font-family: "Muli", sans-serif;
   font-size: 14px;
 }
 
+.login-input {
+  width: 100%;
+  margin: 10px auto;
+  font-family: "Muli", sans-serif;
+  font-size: 14px;
+  border-style: none;
+  background-color: transparent;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--blue);
+}
+
+.login-subscript {
+  position: relative;
+  bottom: 5px;
+  right: 15px;
+  font-size: 12px;
+}
+
 .login-icon {
-  
+  position: relative;
+  bottom: 32px;
+  left: 380px;
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.login-button {
+  text-transform: uppercase;
+  font-size: 14px;
+  font-family: "Muli";
+  letter-spacing: 0.2em;
+
+  background-color: var(--blue);
+  color: var(--grey);
+  width: 100%;
+  height: 45px;
+  border-radius: 45px;
+  cursor: pointer;
+  outline: none;
+  margin-top: 30px;
+}
+
+.login-confirm-pw {
+  position: relative;
+  bottom: 20px;
+}
+
+.login-back {
+  text-align: center;
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.login-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 auto;
+  padding-top: 10vh;
+  width: 50vw;
+  justify-items: center;
+}
+
+.login-step {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  align-items: center;
+  justify-items: start;
+  grid-column-gap: 15px;
+}
+
+.login-step-number {
+  font-family: "Muli";
+  font-size: 16px;
+  color: var(--blue);
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  padding: 8px;
+  border: 0.09em solid var(--blue);
+  text-align: center;
+  align-self: center;
+  justify-self: center;
+  border-radius: 50%;
+}
+
+.login-step-check {
+  background-color: var(--blue);
+  color: var(--grey);
+}
+
+.login-step-text {
+  font-family: "Muli";
+  font-size: 15px;
+  text-transform: uppercase;
+  transform: scaleY(0.9);
+  font-weight: 300;
+}
+
+#month {
+  width: 30px;
+}
+
+#day {
+  width: 30px;
+}
+
+#year {
+  width: 35px;
+}
+
+.login-inline {
+  display: inline;
+  margin-left: 20px;
+}
+
+.login-dropdown {
+  width: 100px;
+  height: 40px;
+  outline: none;
+  font-family: "Muli", sans-serif;
+  font-size: 14px;
+  border-color: transparent;
+  background-color: transparent;
+
+  position: relative;
+  right: 8px;
+}
+
+.login-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.line {
+  position: relative;
+  width: 90px;
+  bottom: 5px;
+  border-bottom: 1px solid var(--blue);
+}
+
+.login-header {
+  text-transform: uppercase;
+  font-size: 17px;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.signup-subscript {
+  position: relative;
+  bottom: 18px;
+  font-size: 12px;
+}
+
+.signup-subscript2 {
+  position: relative;
+  bottom: 5px;
+  font-size: 12px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
+
+.shift-up {
+  position: relative;
+  bottom: 20px;
+}
+
+.hide {
+  display: none;
+  pointer-events: none;
+}
+
+#ssn {
+  height: 18px;
+}
+
+#subscriber-info {
+  position: relative;
+  top: 15px;
+  font-size: 15px;
+}
+
+.full-height {
+  position: relative;
+  top: 10px;
+  height: 400px;
+  overflow: hidden;
+  transition: height 0.2s ease-in;
+}
+
+.zero-height {
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.2s ease-in;
+}
+
+.login-expand {
+  display: flex;
+  align-items: center;
+  color: var(--blue);
+}
+
+#add-insurance {
+  margin-left: 10px;
+  font-size: 15px;
+  font-family: "Muli", sans-serif;
+}
+
+#login-plus {
+  font-size: 18px;
+  width: 0.7em;
+  height: 0.7em;
+  line-height: 0.7em;
+  padding: 4px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: var(--blue);
+  color: var(--grey);
 }

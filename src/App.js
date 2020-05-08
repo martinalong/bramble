@@ -2,10 +2,12 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import Landing from './pages/Landing'
 import Home from './pages/Home'
 import Chat from './pages/Chat'
 import Error from './pages/Error'
 import Login from './pages/Login'
+import Signup from './pages/Signup'
 import Patients from './pages/Patients'
 import Doctors from './pages/Doctors'
 import Account from './pages/Account'
@@ -14,66 +16,86 @@ import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-d
 import {useSelector} from 'react-redux';
 
 function App() {
-  let authenticated = useSelector(state => state.authenticated)
+  let docAuth = useSelector(state => state.docAuth)
+  let patientAuth = useSelector(state => state.patientAuth)
   return (
-    <div>
+    <div className="app">
       <Router>
         <Switch>
+
           <Route path="/patient">
-            <Navbar isPatient={true} authenticated={authenticated}/>
+            <Navbar isPatient={true} authenticated={patientAuth}/>
           </Route>
 
           <Route path="/provider">
-            <Navbar isPatient={false} authenticated={authenticated}/>
+            <Navbar isPatient={false} authenticated={patientAuth}/>
           </Route>
+
+          <Route>
+            <Navbar landingPage={true}/>
+          </Route>
+
         </Switch>
         <Switch>
-          <Route exact path="/signup">
-            <Login hasAccount={false} authenticated={authenticated}/>
-          </Route>
-          
-          <Route exact path="/login">
-            <Login hasAccount={true} authenticated={authenticated}/>
+
+          <Route exact path="/">
+            <Landing/>
           </Route>
 
           <Route exact path="/patient">
-            <Home isPatient={true} authenticated={authenticated}/>
+            <Home isPatient={true} authenticated={patientAuth}/>
           </Route>
 
-          <PrivateRoute exact path="/patient/communication">
-            <Chat isPatient={true} authenticated={authenticated}/>
+          <Route exact path="/patient/signup">
+            <Signup isPatient={true} authenticated={patientAuth}/>
+          </Route>
+          
+          <Route exact path="/patient/login">
+            <Login isPatient={true} authenticated={patientAuth}/>
+          </Route>
+
+          <PrivateRoute exact path="/patient/communication" isPatient={true}>
+            <Chat isPatient={true} authenticated={patientAuth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/patient/appointments">
-            <Schedule isPatient={true} authenticated={authenticated}/>
+          <PrivateRoute exact path="/patient/appointments" isPatient={true}>
+            <Schedule isPatient={true} authenticated={patientAuth}/>
           </PrivateRoute>
 
           <Route exact path="/patient/doctors">
-            <Doctors authenticated={authenticated}/>
+            <Doctors authenticated={patientAuth}/>
           </Route>
 
-          <PrivateRoute exact path="/patient/profile">
-            <Account isPatient={true} authenticated={authenticated}/>
+          <PrivateRoute exact path="/patient/profile" isPatient={true}>
+            <Account isPatient={true} authenticated={patientAuth}/>
           </PrivateRoute>
 
           <Route exact path="/provider">
-            <Home isPatient={false} authenticated={authenticated}/>
+            <Home isPatient={false} authenticated={docAuth}/>
           </Route>
 
-          <PrivateRoute exact path="/provider/communication">
-            <Chat isPatient={false} authenticated={authenticated}/>
+          <Route exact path="/provider/signup">
+            <Signup isPatient={false} authenticated={docAuth}/>
+          </Route>
+          
+          <Route exact path="/provider/login">
+            <Login isPatient={false} authenticated={docAuth}/>
+          </Route>
+
+          <PrivateRoute exact path="/provider/communication" isPatient={false}>
+            <Chat isPatient={false} authenticated={docAuth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/provider/appointments">
-            <Schedule isPatient={false} authenticated={authenticated}/>
+          <PrivateRoute exact path="/provider/appointments" isPatient={false}>
+            <Schedule isPatient={false} authenticated={docAuth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/provider/patients">
-            <Patients authenticated={authenticated}/>
+          <PrivateRoute exact path="/provider/patients" isPatient={false}>
+            <Patients authenticated={docAuth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/provider/profile">
-            <Account isPatient={false} authenticated={authenticated}/>
+          <PrivateRoute exact path="/provider/profile" isPatient={false}>
+            <Account isPatient={false} authenticated={docAuth}/>
           </PrivateRoute>
 
           <Route component={Error}/>
@@ -82,7 +104,7 @@ function App() {
           <Route path="/patient">
             <Footer isPatient={true}/>
           </Route>
-          
+
           <Route path="/provider">
             <Footer isPatient={false}/>
           </Route>
@@ -92,8 +114,9 @@ function App() {
   )
 }
 
-function PrivateRoute({ children, ...rest }) {
+function PrivateRoute({ isPatient, children, ...rest }) {
   let authenticated = useSelector(state => state.authenticated)
+  let path = isPatient ? "/patient/login" : "/provider/login"
   return (
     <Route
       {...rest}
@@ -103,7 +126,7 @@ function PrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: "/login",
+              pathname: path,
               state: { from: location }
             }}
           />

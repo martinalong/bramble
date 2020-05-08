@@ -4,7 +4,7 @@ export default class Home extends Component {
     render() {
         return (
             <div className="page">
-                Hello from home!
+                Hello from home! 
             </div>
         )
     }

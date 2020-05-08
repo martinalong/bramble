@@ -1,16 +1,36 @@
-const authReducer = (state = {authenticated: false}, action) => {
+import { combineReducers } from 'redux'
+
+const docAuthReducer = (state = {docAuth: null}, action) => {
     switch(action.type) {
-      case "LOGIN":
+      case "DOC_LOGIN":
         return {
-          authenticated: action.id
+          docAuth: action.id
         }
-      case "LOGOUT":
+      case "DOC_LOGOUT":
         return {
-          authenticated: false
+          docAuth: null
         }
       default:
         return state;
     }
   };
 
-export default authReducer
+const patientAuthReducer = (state = {patientAuth: null}, action) => {
+    switch(action.type) {
+      case "PATIENT_LOGIN":
+        return {
+          patientAuth: action.id
+        }
+      case "PATIENT_LOGOUT":
+        return {
+            patientAuth: null
+        }
+      default:
+        return state;
+    }
+  };
+
+export default combineReducers({
+    doc: docAuthReducer,
+    patient: patientAuthReducer
+})
