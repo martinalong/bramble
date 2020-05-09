@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {useDispatch} from 'react-redux';
-import { FiEye, FiEyeOff, FiCheck, FiMinus, FiPlus } from 'react-icons/fi'
+import { FiEye, FiEyeOff, FiCheck, FiMinus, FiPlus, FiAlertCircle } from 'react-icons/fi'
 import {useHistory, Link} from 'react-router-dom'
 
 class SignupForm extends Component {
@@ -10,21 +10,30 @@ class SignupForm extends Component {
         this.signup = props.signup
         this.stepCompleted = this.stepCompleted.bind(this)
         this.handleKeyUp = this.handleKeyUp.bind(this)
+        this.handleCheck = this.handleCheck.bind(this)
         this.state = {
             isPatient: props.isPatient,
             showPw: false,
+            firstInsurance: false,
             secondInsurance: false,
             steps: [false, false, false],
-            currStep: 1,
+            currStep: 3,
+            pwValid: true,
+            pwMatch: true,
+            isPrimarySub: false,
+            isSecondarySub: false,
+            sameAsPrimary: false,
+            //completed: 15, //23 if primary insurance, 31 if secondary insurance
         }
     }
 
     handleKeyUp(e) {
         if (e.target.value.length === parseInt(e.target.attributes["maxLength"].value)) {
-            if (e.target.attributes["name"].value === "month") {
-                document.getElementById("day").focus()
-            } else if (e.target.attributes["name"].value  === "day") {
-                document.getElementById("year").focus()
+            let id = e.target.attributes["id"].value;
+            if (id.includes("month")) {
+                document.getElementById("day" + id.charAt(id.length - 1)).focus()
+            } else if (id.includes("day")) {
+                document.getElementById("year" + id.charAt(id.length - 1)).focus()
             }
         }
     }
@@ -32,11 +41,80 @@ class SignupForm extends Component {
     toggleShow(item) {
         if (item === "pw") {
             this.setState({showPw: !this.state.showPw});
-        } else if (item === "insurance") {
+        } else if (item === "secondary") {
+            let secondary = document.getElementsByClassName("secondary")
+            for (let i = 0; i < secondary.length; i++) {
+                secondary[i].required = !secondary[i].required;
+            }
             this.setState({secondInsurance: !this.state.secondInsurance});
+        } else if (item === "primaryShow") {
+            let primary = document.getElementsByClassName("primary")
+            for (let i = 0; i < primary.length; i++) {
+                primary[i].required = true;
+            }
+            this.setState({firstInsurance: true});
+        } else if (item === "primaryHide") {
+            let primary = document.getElementsByClassName("primary")
+            for (let i = 0; i < primary.length; i++) {
+                primary[i].required = false;
+            }
+            this.setState({firstInsurance: false});
+        } else if (item === "primarySubscriberShow") {
+            this.setState({isPrimarySub: true});
+        } else if (item === "primarySubscriberHide") {
+            this.setState({isPrimarySub: false});
+        } else if (item === "secondarySubscriberShow") {
+            this.setState({isSecondarySub: true});
+        } else if (item === "secondarySubscriberHide") {
+            this.setState({isSecondarySub: false});
+        } else if (item === "sameAsPrimary") {
+            this.setState({sameAsPrimary: true});
         }
     }
 
+    handleCheck(e) {
+        let id = e.target.attributes["id"].value
+        if (e.target.type === "select-one") {
+            if (e.target.selectedIndex > 0) {
+                if (id === "stateVal") {
+                    document.getElementById("line-state").style.borderColor = "#424e88";
+                } else if (id === "sex") {
+                    document.getElementById("line-gender").style.borderColor = "#424e88";
+                }
+            } else {
+                if (id === "stateVal") {
+                    document.getElementById("line-state").style.borderColor = "#ec6b66";
+                } else if (id === "sex") {
+                    document.getElementById("line-gender").style.borderColor = "#ec6b66";
+                }
+            }
+            return
+        }
+        let value = e.target.value
+        if (!value || value.length === 0) {
+            document.getElementById(id).style.borderColor = "#ec6b66";
+            return
+        } else {
+            document.getElementById(id).style.borderColor = "#424e88";
+        }
+        let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/; 
+        //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number. The symbols @$!%*?& are allowed
+        if (id === "password") {
+            if (!regex.test(value)) {
+                this.setState({pwValid: false})
+                document.getElementById(id).style.borderColor = "#ec6b66";
+            } else {
+                document.getElementById(id).style.borderColor = "#424e88";
+            }
+        } else if (id === "passwordConfirm") {
+            if (document.getElementById("password").value !== value) {
+                this.setState({pwMatch: false})
+                document.getElementById(id).style.borderColor = "#ec6b66";
+            } else {
+                document.getElementById(id).style.borderColor = "#424e88";
+            }
+        } 
+    }
 
     stepCompleted(step) {
         let newSteps = this.state.steps
@@ -45,7 +123,16 @@ class SignupForm extends Component {
     }
 
     changeStep(change) {
-        console.log(this.state.currStep + change)
+        //set it up to not progress unless filled out required
+        // if (change === 1) {
+        //     if (this.state.currStep === 1) {
+
+        //     } else if (this.state.currStep === 2) {
+
+        //     } else if (this.state.currStep === 3) {
+
+        //     }
+        // }
         this.setState({currStep: this.state.currStep + change})
     }
 
@@ -69,41 +156,50 @@ class SignupForm extends Component {
                 <form className="login-form signup-form"> 
                     <div className={this.state.currStep === 1 ? "part-one" : "part-one hide"}>
                         <p>Already have an account? <Link to={this.state.isPatient? "/patient/login" : "/provider/login"}>Log in</Link></p>
-                        <input className="login-input" type="email" name="email" placeholder="Email" required/>
-                        <input className="login-input" type={this.state.showPw ? "text" : "password"} name="password" placeholder="Choose a password" required/>
+                        <input id="email" className="login-input" type="email" name="email" placeholder="Email" onBlur={this.handleCheck} required/>
+                        <input 
+                            id="password" 
+                            className="login-input" 
+                            type={this.state.showPw ? "text" : "password"} 
+                            pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/" 
+                            title="Minimum eight characters. At least one uppercase letter, one lowercase letter, and one number. The symbols @$!%*?& are allowed" 
+                            name="password" 
+                            placeholder="Choose a password" 
+                            onBlur={this.handleCheck} 
+                            required/>
                         {this.state.showPw ? <FiEyeOff className="login-icon" onClick={() => this.toggleShow("pw")}/> : <FiEye className="login-icon" onClick={() => this.toggleShow("pw")}/>}
-                        <input className="login-input login-confirm-pw" type="password" name="password_confirm" placeholder="Confirm your password" required/>
+                        <input id="passwordConfirm" className="login-input login-confirm-pw" type="password" name="passwordConfirm" placeholder="Confirm your password" onBlur={this.handleCheck} required/>
                     </div> 
                     <div className={this.state.currStep === 2 ? "part-two" : "part-two hide"}>
-                        <input className="login-input" type="text" name="firstName" placeholder="First name" required/>
+                        <input id="firstName" className="login-input" type="text" name="firstName" placeholder="First name" onBlur={this.handleCheck} required/>
                         <input className="login-input" type="text" name="lastName" placeholder="Middle name (optional)"/>
-                        <input className="login-input" type="text" name="lastName" placeholder="Last name" required/>
+                        <input id="lastName" className="login-input" type="text" name="lastName" placeholder="Last name" onBlur={this.handleCheck} required/>
                         <div className="two-col">
                             <div id="dob"> 
-                                <input className="login-input" id="month" type="text" name="month" placeholder="MM" maxLength="2" onChange={this.handleKeyUp} required/>
-                                <input className="login-input" id="day" type="text" name="day" placeholder="DD" maxLength="2" onChange={this.handleKeyUp} required/>
-                                <input className="login-input" id="year" type="text" name="year" placeholder="YYYY" maxLength="4" onChange={this.handleKeyUp} required/>
+                                <input className="login-input" id="month1" type="text" name="month" placeholder="MM" maxLength="2" onChange={this.handleKeyUp} onBlur={this.handleCheck} required/>
+                                <input className="login-input" id="day1" type="text" name="day" placeholder="DD" maxLength="2" onChange={this.handleKeyUp} onBlur={this.handleCheck} required/>
+                                <input className="login-input" id="year1" type="text" name="year" placeholder="YYYY" maxLength="4" onChange={this.handleKeyUp} onBlur={this.handleCheck} required/>
                                 <p className="login-text signup-subscript">Date of Birth</p>
                             </div>
                             <div id="gender">
-                                <select className="login-dropdown" name="sex" required>
+                                <select id="sex" className="login-dropdown" name="sex" onBlur={this.handleCheck} onChange={this.handleCheck} required>
                                     <option className="login-hide" disabled selected value>Gender</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                     <option value="other">Other</option>
                                 </select>   
-                                <div className="line"/>
+                                <div className="line" id="line-gender"/>
                                 <p className="login-text signup-subscript2"></p>
                             </div>
                         </div>
                         <div className="shift-up">
-                            <input id="phoneNumber" className="login-input" type="text" name="phoneNumber" placeholder="Phone number" maxLength="10" required/>
-                            <input className="login-input" type="text" name="address" placeholder="Address" required/>
+                            <input id="phoneNumber" className="login-input" type="text" name="phoneNumber" placeholder="Phone number" maxLength="10" onBlur={this.handleCheck} required/>
+                            <input id="address" className="login-input" type="text" name="address" placeholder="Address" onBlur={this.handleCheck} required/>
                             <input className="login-input" type="text" name="address2" placeholder="Address line 2 (optional)"/>
-                            <input className="login-input" type="text" name="city" placeholder="City" required/>
+                            <input id="city" className="login-input" type="text" name="city" placeholder="City" onBlur={this.handleCheck} required/>
                             <div className="two-col"> 
                                 <div id="state">
-                                    <select className="login-dropdown" name="state" required>
+                                    <select id="stateVal" className="login-dropdown" name="state" onBlur={this.handleCheck} onChange={this.handleCheck} required>
                                         <option className="login-hide" disabled selected value>State</option>
                                         <option value="Alabama">Alabama</option>
                                         <option value="Alaska">Alaska</option>
@@ -158,57 +254,71 @@ class SignupForm extends Component {
                                         <option value="Wisconsin">Wisconsin</option>
                                         <option value="Wyoming">Wyoming</option>
                                     </select>   
-                                    <div className="line"/>
+                                    <div className="line" id="line-state"/>
                                 </div>
-                                <input id="zip" className="login-input" type="text" name="zip" placeholder="ZIP code" maxLength="5" required/>
+                                <input id="zip" className="login-input" type="text" name="zip" placeholder="ZIP code" maxLength="5" onBlur={this.handleCheck} required/>
                             </div>
                         </div>
                     </div> 
                     <div className={this.state.currStep === 3 ? "part-three" : "part-three hide"}>
                         <div>
-                            <p className="login-text login-header">Primary insurance</p>
-                            <input className="login-input" type="text" name="insurance" placeholder="Primary insurance provider" required/>
-                            <input className="login-input" type="text" name="policy" placeholder="Policy number"/>
-                            <input className="login-input" type="text" name="group" placeholder="Group number" required/>
-                            <p id="subscriber-info" className="login-text">Subscriber Information</p>
-                            <input className="login-input" type="text" name="subscriberFirstName" placeholder="First name" required/>
-                            <input className="login-input" type="text" name="subscriberLastName" placeholder="Last name" required/>
-                            <div className="two-col">
-                                <div id="dob"> 
-                                    <input className="login-input" id="month" type="text" name="month" placeholder="MM" maxLength="2" onChange={this.handleKeyUp} required/>
-                                    <input className="login-input" id="day" type="text" name="day" placeholder="DD" maxLength="2" onChange={this.handleKeyUp} required/>
-                                    <input className="login-input" id="year" type="text" name="year" placeholder="YYYY" maxLength="4" onChange={this.handleKeyUp} required/>
-                                    <p className="login-text signup-subscript">Date of Birth</p>
-                                </div>
-                                <input id="ssn" className="login-input" type="text" name="subscriberName" placeholder="Social security number" maxLength="9"/>
-                            </div>
+                            <p className="login-text">Do you have insurance?</p>
+                            <label className="login-text login-option"><input className="login-dot" type="radio" name="hasInsurance" onClick={() => this.toggleShow("primaryShow")} value="yes" required/>Yes</label>
+                            <label className="login-text login-option"><input className="login-dot" type="radio" name="hasInsurance" onClick={() => this.toggleShow("primaryHide")} value="no" required/>No</label>
                         </div>
-                        <span className="login-expand" onClick={() => this.toggleShow("insurance")}>
-                            {this.state.secondInsurance ? <FiMinus id="login-plus"/> : <FiPlus id="login-plus"/>}
-                            <p id="add-insurance">Add another insurance</p>
-                        </span>
-                        <div className={this.state.secondInsurance ? "full-height" : "zero-height"}>
-                            <p className="login-text login-header">Secondary insurance</p>
-                            <input className="login-input" type="text" name="insurance" placeholder="Secondary insurance provider"/>
-                            <input className="login-input" type="text" name="policy" placeholder="Policy number"/>
-                            <input className="login-input" type="text" name="group" placeholder="Group number"/>
-                            <p id="subscriber-info" className="login-text">Subscriber Information</p>
-                            <input className="login-input" type="text" name="subscriberFirstName" placeholder="First name"/>
-                            <input className="login-input" type="text" name="subscriberLastName" placeholder="Last name"/>
-                            <div className="two-col">
-                                <div id="dob"> 
-                                    <input className="login-input" id="month" type="text" name="month" placeholder="MM" maxLength="2" onChange={this.handleKeyUp}/>
-                                    <input className="login-input" id="day" type="text" name="day" placeholder="DD" maxLength="2" onChange={this.handleKeyUp}/>
-                                    <input className="login-input" id="year" type="text" name="year" placeholder="YYYY" maxLength="4" onChange={this.handleKeyUp}/>
-                                    <p className="login-text signup-subscript">Date of Birth</p>
+                        <div className={this.state.firstInsurance ? "full-height" : "zero-height"}>
+                            <div>
+                                <p className="login-text login-header">Primary insurance</p>
+                                <input id="primaryInsurance" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="insurance" placeholder="Primary insurance provider" onBlur={this.handleCheck}/>
+                                <input id="primaryPolicy" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="policy" placeholder="Policy number" onBlur={this.handleCheck}/>
+                                <input id="primaryGroup" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="group" placeholder="Group number" onBlur={this.handleCheck}/>
+                                <p id="subscriber-info" className="login-text">Subscriber Information</p> 
+                                <div className="login-checkbox">
+                                    <FiCheck className="login-checkbox-check"/>
+                                    <label className="login-text">
+                                        <input className="login-dot" type="checkbox" name="isSubscriber1" onChange={() => this.toggleShow("primarySubscriberHide")} value="isPrimary"/>
+                                        I'm the subscriber on this insurance
+                                    </label>
                                 </div>
-                                <input id="ssn" className="login-input" type="text" name="subscriberName" placeholder="Social security number" maxLength="9"/>
+                                <input id="primaryFirst" className="login-input primary" tabIndex={!this.state.isPrimarySub ? 0 : -1} tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="subscriberFirstName" onBlur={this.handleCheck} placeholder="First name"/>
+                                <input id="primaryLast" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="subscriberLastName" onBlur={this.handleCheck} placeholder="Last name"/>
+                                <div className="two-col">
+                                    <div id="dob"> 
+                                        <input id="month2" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="month" placeholder="MM" maxLength="2" onBlur={this.handleCheck} onChange={this.handleKeyUp}/>
+                                        <input id="day2" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="day" placeholder="DD" maxLength="2" onBlur={this.handleCheck} onChange={this.handleKeyUp}/>
+                                        <input id="year2" className="login-input primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="year" placeholder="YYYY" maxLength="4" onBlur={this.handleCheck} onChange={this.handleKeyUp}/>
+                                        <p className="login-text signup-subscript">Date of Birth</p>
+                                    </div>
+                                    <input id="primarySSN" className="login-input ssn primary" tabIndex={this.state.firstInsurance ? 0 : -1} type="text" name="subscriberName" placeholder="Social security number" onBlur={this.handleCheck} maxLength="9"/>
+                                </div>
+                                <span className="login-expand" onClick={() => this.toggleShow("secondary")}>
+                                    {this.state.secondInsurance ? <FiMinus id="login-plus"/> : <FiPlus id="login-plus"/>}
+                                    <p id="add-insurance">Add another insurance</p>
+                                </span>
+                            </div>
+                            <div className={this.state.secondInsurance ? "full-height" : "zero-height"}>
+                                <p className="login-text login-header">Secondary insurance</p>
+                                <input id="secondaryInsurance" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="insurance" onBlur={this.handleCheck} placeholder="Secondary insurance provider"/>
+                                <input id="secondaryPolicy" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="policy" onBlur={this.handleCheck} placeholder="Policy number"/>
+                                <input id="secondaryGroup" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="group" onBlur={this.handleCheck} placeholder="Group number"/>
+                                <p id="subscriber-info" className="login-text">Subscriber Information</p>
+                                <input id="secondaryFirst" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="subscriberFirstName" onBlur={this.handleCheck} placeholder="First name"/>
+                                <input id="secondaryLast" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="subscriberLastName" onBlur={this.handleCheck} placeholder="Last name"/>
+                                <div className="two-col">
+                                    <div id="dob"> 
+                                        <input id="month3" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="month" placeholder="MM" maxLength="2" onBlur={this.handleCheck} onChange={this.handleKeyUp}/>
+                                        <input id="day3" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="day" placeholder="DD" maxLength="2" onBlur={this.handleCheck} onChange={this.handleKeyUp}/>
+                                        <input id="year3" className="login-input secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="year" placeholder="YYYY" maxLength="4" onBlur={this.handleCheck} onChange={this.handleKeyUp}/>
+                                        <p className="login-text signup-subscript">Date of Birth</p>
+                                    </div>
+                                    <input id="secondarySSN" className="login-input ssn secondary" tabIndex={this.state.secondInsurance ? 0 : -1} type="text" name="subscriberName" onBlur={this.handleCheck} placeholder="Social security number" maxLength="9"/>
+                                </div>
                             </div>
                         </div>
                     </div>
                     {this.state.currStep === 3 ?
                     <button className="login-button" type="submit">Submit</button> :
-                    <button className="login-button" onClick={() => this.changeStep(1)}>Next Step</button>}
+                    <button className="login-button" type="button" onClick={() => this.changeStep(1)}>Next Step</button>}
                     {this.state.currStep === 1 ?
                     <div></div> :
                     <p className="login-text login-back" onClick={() => this.changeStep(-1)}>Go Back</p>}
