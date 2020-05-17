@@ -3,120 +3,96 @@ import './App.css';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Landing from './pages/Landing'
-import Home from './pages/Home'
 import Chat from './pages/Chat'
 import Error from './pages/Error'
 import Login from './pages/Login'
-import Signup from './pages/Signup'
+import Onboarding from './pages/Onboarding'
+import Dashboard from './pages/Dashboard'
 import Patients from './pages/Patients'
 import Doctors from './pages/Doctors'
 import Account from './pages/Account'
 import Schedule from './pages/Schedule'
 import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import {useSelector} from 'react-redux';
+import { Stitch, 
+  RemoteMongoClient
+} from "mongodb-stitch-browser-sdk";
+
+const client = Stitch.initializeDefaultAppClient("bramble-bptsn");
+const mongodb = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+export const patientCollection = mongodb.db("data").collection("patientCollection");
 
 function App() {
-  let docAuth = useSelector(state => state.docAuth)
-  let patientAuth = useSelector(state => state.patientAuth)
+  let auth = useSelector(state => state.auth)
+  let info = useSelector(state => state.info)
+  let accountType = null
+  if (info) {
+    accountType = info.accountType
+  }
+  console.log("auth", auth)
+  console.log("info", info)
+  console.log("accountType", accountType)
   return (
     <div className="app">
       <Router>
-        <Switch>
-
-          <Route path="/patient">
-            <Navbar isPatient={true} authenticated={patientAuth}/>
-          </Route>
-
-          <Route path="/provider">
-            <Navbar isPatient={false} authenticated={patientAuth}/>
-          </Route>
-
-          <Route>
-            <Navbar landingPage={true}/>
-          </Route>
-
-        </Switch>
+        <Navbar/>
         <Switch>
 
           <Route exact path="/">
-            <Landing/>
+            <Landing accountType={accountType}/>
           </Route>
 
-          <Route exact path="/patient">
-            <Home isPatient={true} authenticated={patientAuth}/>
-          </Route>
-
-          <Route exact path="/patient/signup">
-            <Signup isPatient={true} authenticated={patientAuth}/>
+          <Route exact path="/signup">
+            <Login type="signup"/>
           </Route>
           
-          <Route exact path="/patient/login">
-            <Login isPatient={true} authenticated={patientAuth}/>
+          <Route exact path="/login">
+            <Login type="login" auth={auth}/>
           </Route>
 
-          <PrivateRoute exact path="/patient/communication" isPatient={true}>
-            <Chat isPatient={true} authenticated={patientAuth}/>
-          </PrivateRoute>
-
-          <PrivateRoute exact path="/patient/appointments" isPatient={true}>
-            <Schedule isPatient={true} authenticated={patientAuth}/>
-          </PrivateRoute>
-
-          <Route exact path="/patient/doctors">
-            <Doctors authenticated={patientAuth}/>
+          <Route exact path="/first-login">
+            <Login type="first-login"/>
           </Route>
 
-          <PrivateRoute exact path="/patient/profile" isPatient={true}>
-            <Account isPatient={true} authenticated={patientAuth}/>
-          </PrivateRoute>
-
-          <Route exact path="/provider">
-            <Home isPatient={false} authenticated={docAuth}/>
+          <Route exact path="/onboarding">
+            <Onboarding auth={auth}/>
           </Route>
 
-          <Route exact path="/provider/signup">
-            <Signup isPatient={false} authenticated={docAuth}/>
-          </Route>
-          
-          <Route exact path="/provider/login">
-            <Login isPatient={false} authenticated={docAuth}/>
+          <Route exact path="/dashboard">
+            <Dashboard accountType={accountType} info={info}/>
           </Route>
 
-          <PrivateRoute exact path="/provider/communication" isPatient={false}>
-            <Chat isPatient={false} authenticated={docAuth}/>
+          <PrivateRoute exact path="/communication" accountType={accountType}>
+            <Chat accountType={accountType} info={info}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/provider/appointments" isPatient={false}>
-            <Schedule isPatient={false} authenticated={docAuth}/>
+          <PrivateRoute exact path="/account" accountType={accountType}>
+            <Account accountType={accountType} auth={auth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/provider/patients" isPatient={false}>
-            <Patients authenticated={docAuth}/>
+          <PrivateRoute exact path="/appointments" accountType={accountType}>
+            <Schedule accountType={accountType} info={info}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/provider/profile" isPatient={false}>
-            <Account isPatient={false} authenticated={docAuth}/>
+          <PrivateRoute exact path="/patients" accountType={accountType}>
+            <Patients auth={auth}/>
+          </PrivateRoute>
+
+          <PrivateRoute exact path="/doctors" accountType={accountType}>
+            <Doctors auth={auth}/>
           </PrivateRoute>
 
           <Route component={Error}/>
         </Switch>
-        <Switch>
-          <Route path="/patient">
-            <Footer isPatient={true}/>
-          </Route>
-
-          <Route path="/provider">
-            <Footer isPatient={false}/>
-          </Route>
-        </Switch>
+        <Footer accountType={accountType}/>
       </Router>
     </div>
   )
 }
 
-function PrivateRoute({ isPatient, children, ...rest }) {
-  let authenticated = useSelector(state => state.authenticated)
-  let path = isPatient ? "/patient/login" : "/provider/login"
+function PrivateRoute({ children, ...rest }) {
+  let authenticated = useSelector(state => state.auth)
+  let path = "/login"
   return (
     <Route
       {...rest}

@@ -6,22 +6,25 @@ export default class Schedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            authenticated: props.authenticated,
-            isPatient: props.isPatient,
-            id: "p00000001"
+            info: props.info,
+            accountType: props.accountType,
         }
     }
 
     render() {
-        if (!this.state.authenticated) {
+        if (this.state.accountType === "patient") {
             return (
-                <Login isPatient={this.state.isPatient}/>
+                <div className="page">
+                    Hello from patient schedule!
+                </div>
+            )
+        } 
+        if (this.state.accountType === "provider") {
+            return (
+                <div className="page">
+                    Hello from provider schedule!
+                </div>
             )
         }
-        return (
-            <div className="page">
-                Hello from schedule!
-            </div>
-        )
     }
 }
