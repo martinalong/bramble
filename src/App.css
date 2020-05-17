@@ -281,6 +281,10 @@ input {
   border-bottom: 1px solid var(--blue);
 }
 
+.red {
+  border-bottom: 1px solid var(--primaryColor);
+}
+
 .login-header {
   text-transform: uppercase;
   font-size: 17px;
