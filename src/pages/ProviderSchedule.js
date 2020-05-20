@@ -26,39 +26,33 @@ function ScheduleCreatorWidget(props) {
     ))
     return (
         <div className="schedule-widget">
-            <span className="schedule-center">
-                <h1 className="schedule-header">Apply to:</h1>
-                <div className="schedule-days">
-                    <p className={"schedule-button" + (!days()[0] ? " unselected" : days()[0] === num ? " selected" : " null")} onClick={() => setDays(0)}>Sun</p>
-                    <p className={"schedule-button" + (!days()[1] ? " unselected" : days()[1] === num ? " selected" : " null")} onClick={() => setDays(1)}>Mon</p>
-                    <p className={"schedule-button" + (!days()[2] ? " unselected" : days()[2] === num ? " selected" : " null")} onClick={() => setDays(2)}>Tues</p>
-                    <p className={"schedule-button" + (!days()[3] ? " unselected" : days()[3] === num ? " selected" : " null")} onClick={() => setDays(3)}>Weds</p>
-                    <p className={"schedule-button" + (!days()[4] ? " unselected" : days()[4] === num ? " selected" : " null")} onClick={() => setDays(4)}>Thurs</p>
-                    <p className={"schedule-button" + (!days()[5] ? " unselected" : days()[5] === num ? " selected" : " null")} onClick={() => setDays(5)}>Fri</p>
-                    <p className={"schedule-button" + (!days()[6] ? " unselected" : days()[6] === num ? " selected" : " null")} onClick={() => setDays(6)}>Sat</p>
-                </div>
-            </span>
+            <h1 className="schedule-title">Edit your Availability</h1>
+            <div className="schedule-days">
+                <p className={"schedule-button-day" + (!days()[0] ? " unselected" : days()[0] === num ? " selected" : " null")} onClick={() => setDays(0)}>S</p>
+                <p className={"schedule-button-day" + (!days()[1] ? " unselected" : days()[1] === num ? " selected" : " null")} onClick={() => setDays(1)}>M</p>
+                <p className={"schedule-button-day" + (!days()[2] ? " unselected" : days()[2] === num ? " selected" : " null")} onClick={() => setDays(2)}>T</p>
+                <p className={"schedule-button-day" + (!days()[3] ? " unselected" : days()[3] === num ? " selected" : " null")} onClick={() => setDays(3)}>W</p>
+                <p className={"schedule-button-day" + (!days()[4] ? " unselected" : days()[4] === num ? " selected" : " null")} onClick={() => setDays(4)}>T</p>
+                <p className={"schedule-button-day" + (!days()[5] ? " unselected" : days()[5] === num ? " selected" : " null")} onClick={() => setDays(5)}>F</p>
+                <p className={"schedule-button-day" + (!days()[6] ? " unselected" : days()[6] === num ? " selected" : " null")} onClick={() => setDays(6)}>S</p>
+            </div>
             <div className="schedule-two-col">
                 <div className="schedule-col">
-                    <h1 className="schedule-header">Morning</h1>
-                    <div className="schedule-viewport">
-                        <div className="schedule-morning schedule-times">
-                            {morning}
-                        </div>
+                    <div className="schedule-morning schedule-times">
+                        <h1 className="schedule-header">Morning</h1>
+                        {morning}
                     </div>
                 </div>
                 <div className="schedule-col">
-                    <h1 className="schedule-header">Afternoon</h1>
-                    <div className="schedule-viewport">
-                        <div className="schedule-afternoon schedule-times">
-                            <div className="schedule-hour">
-                                <p className={"schedule-button" + (availability().has("12:00") ? " selected" : " unselected")} onClick={() => setAvailability("12:00")}>12:00 pm</p>
-                                <p className={"schedule-button" + (availability().has("12:15") ? " selected" : " unselected")} onClick={() => setAvailability("12:15")}>12:15 pm</p>
-                                <p className={"schedule-button" + (availability().has("12:30") ? " selected" : " unselected")} onClick={() => setAvailability("12:30")}>12:30 pm</p>
-                                <p className={"schedule-button" + (availability().has("12:45") ? " selected" : " unselected")} onClick={() => setAvailability("12:45")}>12:45 pm</p>
-                            </div>
-                            {afternoon}
+                    <div className="schedule-afternoon schedule-times">
+                        <h1 className="schedule-header">Afternoon</h1>
+                        <div className="schedule-hour">
+                            <p className={"schedule-button" + (availability().has("12:00") ? " selected" : " unselected")} onClick={() => setAvailability("12:00")}>12:00 pm</p>
+                            <p className={"schedule-button" + (availability().has("12:15") ? " selected" : " unselected")} onClick={() => setAvailability("12:15")}>12:15 pm</p>
+                            <p className={"schedule-button" + (availability().has("12:30") ? " selected" : " unselected")} onClick={() => setAvailability("12:30")}>12:30 pm</p>
+                            <p className={"schedule-button" + (availability().has("12:45") ? " selected" : " unselected")} onClick={() => setAvailability("12:45")}>12:45 pm</p>
                         </div>
+                        {afternoon}
                     </div>
                 </div>
             </div>

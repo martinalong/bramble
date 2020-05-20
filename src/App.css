@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Muli:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Muli:wght@400;600&display=swap');
 
 :root {
   --primaryColor: #F56666;
@@ -548,9 +548,12 @@ select {
 /****************/
 
 .schedule-days {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-content: center;
+  width: 80vw;
+  justify-self: center;
+  margin-bottom: 25px;
 }
 
 .schedule-hour {
@@ -573,24 +576,15 @@ select {
   text-align: center;
   padding: 10px 0;
   width: 100px;
-  border: 1.5px solid var(--blue);
-  border-radius: 15px;
+  border: 1px solid var(--blue);
+  border-radius: 10px;
   margin: 5px 10px;
   cursor: pointer;
 }
 
 .schedule-widget {
   display: grid;
-}
-
-.selected {
-  background-color: var(--blue);
-  color: var(--grey);
-}
-
-.null {
-  color: #b5b5b5;
-  border-color: #b5b5b5;
+  margin-bottom: 60px;
 }
 
 .schedule-two-col {
@@ -600,16 +594,46 @@ select {
   justify-content: center;
 }
 
-.schedule-center {
-  justify-self: center;
-  margin-bottom: 20px;
-}
-
 .schedule-col {
   margin: 0 20px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 15px;
+  height: 600px;
+}
+
+.schedule-title {
+  font-family: "Muli", sans-serif;
+  font-size: 24px;
 }
 
 .schedule-header {
   font-family: "Muli", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
+  color: var(--mediumGrey);
+}
+
+.schedule-button-day {
+  font-family: "Muli", sans-serif;
+  font-size: 22px;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  padding: 8px;
+  /* border: 0.05em solid; */
+  text-align: center;
+  align-self: center;
+  justify-self: center;
+  border-radius: 50%;
+  background-color: white;
+  color: var(--blue);
+}
+
+.selected {
+  background-color: var(--blue);
+  color: white;
+}
+
+.null {
+  color: #b5b5b5;
 }
