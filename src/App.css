@@ -116,25 +116,25 @@ input {
 /*************/
 
 .login-form {
-  width: 400px;
+  width: 500px;
   margin: auto;
   padding-top: 20vh;
 }
 
 .signup-form {
-  padding-top: 5vh;
+  padding-top: 10vh;
 }
 
 .login-text {
   font-family: "Muli", sans-serif;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .login-input {
   width: 100%;
-  margin: 10px auto;
+  margin: 10px 0;
   font-family: "Muli", sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   border-style: none;
   background-color: transparent;
   padding-bottom: 5px;
@@ -143,33 +143,54 @@ input {
 
 .login-subscript {
   position: relative;
-  bottom: 5px;
-  right: 15px;
-  font-size: 12px;
+  bottom: 20px;
+  left: 15px;
+  font-size: 14px;
+  font-family: "Muli", sans-serif;
+  color: var(--darkGrey);
+}
+
+.login-subscript2 {
+  position: relative;
+  bottom: 9px;
+  right: 17px;
+  font-size: 14px;
+}
+
+.red-words {
+  color: var(--primaryColor)
 }
 
 .login-icon {
   position: relative;
-  bottom: 32px;
-  left: 380px;
+  font-size: 18px;
+  bottom: 33px;
+  left: 480px;
   color: var(--blue);
   cursor: pointer;
 }
 
 .login-button {
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 16px;
   font-family: "Muli";
-  letter-spacing: 0.2em;
+  letter-spacing: 0.3em;
 
   background-color: var(--blue);
   color: var(--grey);
-  width: 100%;
+  width: 400px;
+  margin-left: 50px;
   height: 45px;
   border-radius: 45px;
   cursor: pointer;
   outline: none;
   margin-top: 30px;
+}
+
+.small-login-button {
+  width: 205px;
+  margin-left: 30px;
+  font-size: 14px;
 }
 
 .login-confirm-pw {
@@ -261,7 +282,7 @@ input {
   height: 40px;
   outline: none;
   font-family: "Muli", sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   border-color: transparent;
   background-color: transparent;
 
@@ -276,26 +297,21 @@ input {
 
 .line {
   position: relative;
-  width: 90px;
-  bottom: 5px;
+  width: 232px;
+  bottom: 4px;
   border-bottom: 1px solid var(--blue);
-}
-
-.red {
-  border-bottom: 1px solid var(--primaryColor);
 }
 
 .login-header {
   text-transform: uppercase;
-  font-size: 17px;
+  font-size: 18px;
   color: var(--blue);
   font-weight: 600;
 }
 
 .signup-subscript {
   position: relative;
-  bottom: 18px;
-  font-size: 12px;
+  bottom: 5px;
 }
 
 .signup-subscript2 {
@@ -306,12 +322,13 @@ input {
 
 .two-col {
   display: grid;
-  grid-template-columns: 2fr 3fr;
+  grid-template-columns: 2fr 2fr;
 }
 
-.shift-up {
-  position: relative;
-  bottom: 20px;
+.three-col {
+  display: grid;
+  grid-template-columns: 1.2fr 1.8fr 3fr;
+  margin-bottom: 20px;
 }
 
 .hide {
@@ -326,16 +343,19 @@ input {
 #subscriber-info {
   position: relative;
   top: 15px;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .full-height {
   max-height: 1600px;
-  overflow: hidden;
+  transition: max-height 0.2s ease-in;
+}
+
+.show-insurance {
   animation-name: height-transition;
   animation-duration: 0.2s;
   animation-timing-function: ease-in;
-  /* transition: max-height 0.2s ease-in; */
+  overflow: hidden;
 }
 
 @keyframes height-transition {
@@ -348,11 +368,11 @@ input {
   }
 }
 
-/* .zero-height {
+.zero-height {
   max-height: 0px;
   overflow: hidden;
   transition: max-height 0.2s ease-in;
-} */
+}
 
 .login-expand {
   display: flex;
@@ -362,12 +382,12 @@ input {
 
 #add-insurance {
   margin-left: 10px;
-  font-size: 15px;
+  font-size: 16px;
   font-family: "Muli", sans-serif;
 }
 
-.first-insurance {
-  margin-bottom: 20px;
+.insurance {
+  margin-top: 30px;
 }
 
 #login-plus {
@@ -456,4 +476,140 @@ input[type="checkbox"]:checked:before {
   top: 3px;
   font-size: 14px;
   z-index: 3;
+}
+
+.nice-dates-navigation, .nice-dates-day {
+  font-size: 20px;
+}
+
+.nice-dates-popover {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.input {
+  background-color: transparent;
+  border-style: none;
+  border-bottom: 1px solid var(--blue);
+  padding-bottom: 5px;
+  font-size: 16px;
+  font-family: "Muli", sans-serif;
+  position: relative;
+  top: 8px;
+  width: 90px;
+}
+
+#gender {
+  position: relative;
+  margin-bottom: -10px;
+}
+
+#login-radio-alert {
+  position: relative;
+  bottom: 69px;
+  left: 200px;
+}
+
+.red {
+  border-bottom: 1px solid var(--primaryColor);
+}
+
+
+#line-state {
+  width: 232px;
+}
+
+#phoneNumber {
+  width: 230px;
+}
+
+#extension {
+  width: 250px;
+}
+
+#specialty {
+  width: 500px !important;
+}
+
+#specialty-line {
+  width: 502px;
+}
+
+#yearsPracticing {
+  width: 232px;
+}
+
+select {
+  width: 240px !important;
+}
+
+/****************/
+/*** SCHEDULE ***/
+/****************/
+
+.schedule-days {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.schedule-hour {
+  display: flex;
+  flex-direction: row;
+}
+
+.schedule-times {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.schedule-button {
+  font-family: "Muli", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--blue);
+
+  text-align: center;
+  padding: 10px 0;
+  width: 100px;
+  border: 1.5px solid var(--blue);
+  border-radius: 15px;
+  margin: 5px 10px;
+  cursor: pointer;
+}
+
+.schedule-widget {
+  display: grid;
+}
+
+.selected {
+  background-color: var(--blue);
+  color: var(--grey);
+}
+
+.null {
+  color: #b5b5b5;
+  border-color: #b5b5b5;
+}
+
+.schedule-two-col {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.schedule-center {
+  justify-self: center;
+  margin-bottom: 20px;
+}
+
+.schedule-col {
+  margin: 0 20px;
+}
+
+.schedule-header {
+  font-family: "Muli", sans-serif;
+  font-size: 20px;
 }

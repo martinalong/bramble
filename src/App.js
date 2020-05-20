@@ -11,7 +11,8 @@ import Dashboard from './pages/Dashboard'
 import Patients from './pages/Patients'
 import Doctors from './pages/Doctors'
 import Account from './pages/Account'
-import Schedule from './pages/Schedule'
+import ProviderSchedule from './pages/ProviderSchedule'
+import PatientSchedule from './pages/PatientSchedule'
 import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import {useSelector} from 'react-redux';
 import { Stitch, 
@@ -21,6 +22,9 @@ import { Stitch,
 const client = Stitch.initializeDefaultAppClient("bramble-bptsn");
 const mongodb = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
 export const patientCollection = mongodb.db("data").collection("patientCollection");
+export const providerCollection = mongodb.db("data").collection("providerCollection");
+export const practiceCollection = mongodb.db("data").collection("practiceCollection");
+export const appointmentCollection = mongodb.db("data").collection("appointmentCollection");
 
 function App() {
   let auth = useSelector(state => state.auth)
@@ -29,9 +33,7 @@ function App() {
   if (info) {
     accountType = info.accountType
   }
-  console.log("auth", auth)
-  console.log("info", info)
-  console.log("accountType", accountType)
+  console.log("info", info) //remove later
   return (
     <div className="app">
       <Router>
@@ -39,7 +41,7 @@ function App() {
         <Switch>
 
           <Route exact path="/">
-            <Landing accountType={accountType}/>
+            <Landing/>
           </Route>
 
           <Route exact path="/signup">
@@ -59,32 +61,41 @@ function App() {
           </Route>
 
           <Route exact path="/dashboard">
-            <Dashboard accountType={accountType} info={info}/>
+            <Dashboard info={info}/>
           </Route>
 
-          <PrivateRoute exact path="/communication" accountType={accountType}>
-            <Chat accountType={accountType} info={info}/>
+          <PrivateRoute exact path="/communication">
+            <Chat info={info}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/account" accountType={accountType}>
-            <Account accountType={accountType} auth={auth}/>
+          <PrivateRoute exact path="/account">
+            <Account auth={auth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/appointments" accountType={accountType}>
-            <Schedule accountType={accountType} info={info}/>
-          </PrivateRoute>
+          <Route exact path="/appointments">
+            <ProviderSchedule info={info}/>
+          </Route>
 
-          <PrivateRoute exact path="/patients" accountType={accountType}>
+          {/* <PrivateRoute exact path="/appointments">
+            {info.accountType === "patient" ?
+            <PatientSchedule info={info}/> :
+            info.accountType === "provider" ? 
+            <ProviderSchedule info={info}/> :
+            <Error type="onboarding"/>
+            }
+          </PrivateRoute> */}
+
+          <PrivateRoute exact path="/patients">
             <Patients auth={auth}/>
           </PrivateRoute>
 
-          <PrivateRoute exact path="/doctors" accountType={accountType}>
+          <PrivateRoute exact path="/doctors">
             <Doctors auth={auth}/>
           </PrivateRoute>
 
           <Route component={Error}/>
         </Switch>
-        <Footer accountType={accountType}/>
+        <Footer/>
       </Router>
     </div>
   )

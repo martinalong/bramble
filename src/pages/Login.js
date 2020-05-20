@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
 import {useDispatch} from 'react-redux';
 import {useHistory, useLocation, Link} from 'react-router-dom'
@@ -9,183 +9,126 @@ import { Stitch,
     UserPasswordCredential 
 } from "mongodb-stitch-browser-sdk";
 import { patientCollection } from '../App.js'
+import { useForm } from "react-hook-form";
 
-class SignupForm extends Component {
-    constructor(props) {
-        super(props)
-        this.toggleShowPw = this.toggleShowPw.bind(this)
-        this.handleCheck = this.handleCheck.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.catchError = this.catchError.bind(this)
-        this.state = {
-            showPw: false,
-            emailValid: true,
-            pwValid: true,
-            pwMatch: true,
-            alert: [false, false, false],
-            error: false,
-            completed: false,
-        }
-    }
+function SignupForm(props) {
+    let [showPw, toggleShow] = useState(false)
+    let [completed, markCompleted] = useState(false)
+    let [error, toggleError] = useState()
+    let [showAlert, toggleAlert] = useState(false)
+    const { register, handleSubmit, errors } = useForm();
+    const onSubmit = (data) => {
+        let email = data.email
+        let password = data.password
+        const emailPasswordClient = Stitch.defaultAppClient.auth
+        .getProviderClient(UserPasswordAuthProviderClient.factory);
 
-    toggleShowPw() {
-        this.setState({showPw: !this.state.showPw});
-    }
-
-    handleCheck(e) {
-        let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
-        //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number. The symbols @$!%*?& are allowed
-        let red = "#ec6b66";
-        let blue = "#424e88";
-        let id = e.target.attributes["id"].value
-        let value = e.target.value
-        
-        if (id === "password") {
-            if (!passwordRegex.test(value)) {
-                this.setState({pwValid: false})
-                document.getElementById(id).style.borderColor = red;
-            } else {
-                this.setState({pwValid: true})
-                document.getElementById(id).style.borderColor = blue;
+        emailPasswordClient.registerWithEmail(email, password)
+        .then(() => markCompleted(true))
+        .catch((err) => {
+            if (err.errorCode === 46) {
+                toggleError("It looks like that email is already in use")
             }
-        } else if (id === "passwordConfirm") {
-            if (document.getElementById("password").value !== value) {
-                this.setState({pwMatch: false})
-                document.getElementById(id).style.borderColor = red;
-            } else {
-                this.setState({pwMatch: true})
-                document.getElementById(id).style.borderColor = blue;
-            }
-        } else if (id === "email") {
-            if (!emailRegex.test(value)) {
-                this.setState({emailValid: false})
-                document.getElementById(id).style.borderColor = red;
-            } else {
-                this.setState({emailValid: true})
-                document.getElementById(id).style.borderColor = blue;
-            }
-        }
+        });
+    } 
+    
+    let passwordMatch = (value) => {
+        if (document.getElementById("password").value === value) return true;
+        return false;
     }
 
-    handleSubmit() {
-        if (this.state.emailValid && this.state.pwValid && this.state.pwMatch) {
-            let email = document.getElementById("email").value
-            let password = document.getElementById("password").value
-            const emailPasswordClient = Stitch.defaultAppClient.auth
-            .getProviderClient(UserPasswordAuthProviderClient.factory);
-
-            emailPasswordClient.registerWithEmail(email, password)
-            .then(() => this.setState({completed: true}))
-            .catch(err => this.catchError(err));
-        } else {
-            this.setState({error: "Please make sure all fields are filled out correctly"})
-        }
-    }
-
-    catchError(err) {
-        if (err.errorCode === 46) {
-            this.setState({error: "It looks like that email is already in use"})
-        } 
-    }
-
-    render() {
-        if (this.state.completed) {
-            return (
-                <div className="login-form page">
-                   <p className="login-text">
-                        Signup successful! Please check your email for a confirmation link to finish signing up.
-                        <Link to="/onboarding">Temp Link</Link>
-                   </p> 
-                </div>
-            )
-        }
+    if (completed) {
         return (
-            <div className="page">
-                <form className="login-form">
-                    <input id="email" className="login-input" type="email" name="email" placeholder="Email" onBlur={this.handleCheck} required/>
-                    <input 
-                        id="password" 
-                        className="login-input" 
-                        type={this.state.showPw ? "text" : "password"} 
-                        pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/" 
-                        title="Minimum eight characters. At least one uppercase letter, one lowercase letter, and one number. The symbols @$!%*?& are allowed" 
-                        name="password" 
-                        placeholder="Password" 
-                        onBlur={this.handleCheck} 
-                        required/>
-                    {this.state.showPw ? <FiEyeOff className="login-icon" onClick={() => this.toggleShowPw("pw")}/> : <FiEye className="login-icon" onClick={() => this.toggleShowPw("pw")}/>}
-                    <input id="passwordConfirm" className="login-input login-confirm-pw" type="password" name="passwordConfirm" placeholder="Confirm your password" onBlur={this.handleCheck} required/>
-                    {this.state.error ? 
-                    <p className="login-text login-red">{this.state.error}</p> :
-                    <div></div>
-                    }
-                    <button className="login-button" type="button" onClick={this.handleSubmit}>Submit</button>
-                    <p className="login-text login-centered">Already have an account? <Link to="/login">Log in</Link></p> 
-                </form> 
+            <div className="login-form page">
+                <p className="login-text">
+                    Signup successful! Please check your email for a confirmation link to finish signing up.
+                    <Link to="/onboarding">Temp Link</Link>
+                </p> 
             </div>
         )
     }
+    return (
+        <div className="page">
+            <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+                <input 
+                    id="email" 
+                    className={errors.email ? "login-input red" : "login-input"} 
+                    type="email" 
+                    name="email" 
+                    placeholder="Email" 
+                    ref={register({ required: true, pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ })}/>
+                {errors.email && errors.email.type === "pattern" && <p className="login-text red-words">Please enter a valid email</p>}
+                <input 
+                    id="password" 
+                    className={errors.password ? "login-input red" : "login-input"} 
+                    type={showPw ? "text" : "password"} 
+                    name="password" 
+                    placeholder="Password" 
+                    ref={register({ required: true, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/ })}
+                    onFocus={() => toggleAlert(true)}
+                    onBlur={() => toggleAlert(false)}
+                    />
+                {showPw ? <FiEyeOff className="login-icon" onClick={() => toggleShow(false)}/> : <FiEye className="login-icon" onClick={() => toggleShow(true)}/>}
+                <div className={showAlert || (errors.password && errors.password.type === "pattern") ? "full-height" : "zero-height"}>
+                    <p className={errors.password && errors.password.type === "pattern" ? "login-subscript red-words" : "login-subscript"}>
+                        <div>• Minimum eight characters</div>
+                        <div>• Must contain one uppercase, one lowercase, and one number</div>
+                    </p>
+                </div>
+                <input 
+                    id="passwordConfirm" 
+                    className={errors.passwordConfirm && errors.passwordConfirm.type === "required" ? "login-input login-confirm-pw red" : "login-input login-confirm-pw"} 
+                    type="password" 
+                    name="passwordConfirm" 
+                    placeholder="Confirm your password" 
+                    ref={register({ required: true, validate: passwordMatch })}/>
+                {errors.passwordConfirm && errors.passwordConfirm.type === "validate" && <p className="login-text red-words">The passwords do not match</p>}
+                {error && <p className="login-text red-words">{error}</p>}
+                <button className="login-button" type="submit">Sign up</button>
+                <p className="login-text login-centered">Already have an account? <Link to="/login">Log in</Link></p> 
+            </form> 
+        </div>
+    )
 }
 
-class LoginForm extends Component {
-    constructor(props) {
-        super(props)
-        this.submit = props.submit 
-        this.toggleShowPw = this.toggleShowPw.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.catchError = this.catchError.bind(this)
-        this.state = {
-            showPw: false,
-            error: false,
-        }
-    }
-
-    toggleShowPw() {
-        this.setState({showPw: !this.state.showPw});
-    }
-
-    handleSubmit() {
+function LoginForm(props) {
+    let submit = props.submit 
+    const { register, handleSubmit, errors } = useForm();
+    const onSubmit = (data) => {
         let email = document.getElementById("email").value
         let password = document.getElementById("password").value
-        if (email && password) {
-            const app = Stitch.defaultAppClient
-            const credential = new UserPasswordCredential(email, password)
-            app.auth.loginWithCredential(credential)
-            .then((authedUser) => {
-                this.submit(authedUser.id)
-            })
-            .catch(err => this.catchError(err))
-        } else {
-            this.setState({error: "Please make sure all fields are filled out"})
-        }
-    }
+        const app = Stitch.defaultAppClient
+        const credential = new UserPasswordCredential(email, password)
+        app.auth.loginWithCredential(credential)
+        .then((authedUser) => {
+            submit(authedUser.id)
+        })
+        .catch(err => {
+            console.log(err);
+            toggleError("The email and password provided don't match our records");
+        })
+    } 
+    let [showPw, toggleShow] = useState(false)
+    let [error, toggleError] = useState()
 
-    catchError(err) {
-        console.log(err)
-        if (err.errorCode === 46) {
-            this.setState({error: "The email and password provided don't match our records"})
-        } 
-    }
-
-    render() {
-        return (
-            <div className="page">
-                <form className="login-form">
-                    <input id="email" className="login-input" type="email" name="email" placeholder="Email" required/>
-                    <input id="password" className="login-input" type={this.state.showPw ? "text" : "password"} name="password" placeholder="Password" required/>
-                    {this.state.showPw ? <FiEyeOff className="login-icon" onClick={this.toggleShowPw}/> : <FiEye className="login-icon" onClick={this.toggleShowPw}/>}
-                    <Link className="login-text login-subscript" to={this.state.isPatient? "/patient/password-reset" : "/provider/password-reset"}>Forgot password?</Link>
-                    {this.state.error ? 
-                    <p className="login-text login-red">{this.state.error}</p> :
-                    <div></div>
-                    }
-                    <button type="button" className="login-button" onClick={this.handleSubmit}>Sign in</button>
-                    <p className="login-text login-centered">Don't have an account? <Link to="/signup">Sign up</Link></p> 
-                </form>
-            </div>
-        )
-    }
+    return (
+        <div className="page">
+            <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+                <input id="email" className={errors.email ? "login-input red" : "login-input"} type="email" name="email" placeholder="Email" ref={register({ required: true})}/>
+                <input id="password" className={errors.password ? "login-input red" : "login-input"} type={showPw ? "text" : "password"} name="password" placeholder="Password" ref={register({ required: true})}/>
+                {showPw ? <FiEyeOff className="login-icon" onClick={() => toggleShow(false)}/> : <FiEye className="login-icon" onClick={() => toggleShow(true)}/>}
+                <Link className="login-text login-subscript2" to="/password-reset">Forgot password?</Link>
+                {errors.email || errors.password ?
+                <p className="login-text red-words">Please make sure all fields are filled out</p> :
+                error ? 
+                <p className="login-text red-words">{error}</p> :
+                <div></div>
+                }
+                <button type="submit" className="login-button">Sign in</button>
+                <p className="login-text login-centered">Don't have an account? <Link to="/signup">Sign up</Link></p> 
+            </form>
+        </div>
+    )
 }
 
 
