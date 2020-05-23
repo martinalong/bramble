@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react'
-import { FiCheck, FiMinus, FiPlus, FiAlertCircle } from 'react-icons/fi'
+import { FiCheck, FiMinus, FiPlus, FiInfo } from 'react-icons/fi'
 import {useHistory, Redirect} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux';
 import { patientCollection, providerCollection, practiceCollection } from '../App.js'

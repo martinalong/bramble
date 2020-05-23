@@ -1,60 +1,115 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
+import {
+    DatePicker,
+    TimePicker,
+    DateTimePicker,
+    MuiPickersUtilsProvider,
+  } from '@material-ui/pickers';
+import TextField from '@material-ui/core/TextField';
+import DateFnsUtils from '@date-io/date-fns';
+import { FiCheck, FiMinus, FiPlus, FiInfo, FiXCircle } from 'react-icons/fi'
+
+function AppointmentTypeWidget(props) {
+    let deleteField = props.deleteField
+    let num = props.num
+
+    return (
+        <div className="schedule-appointments">
+            <FiXCircle id="schedule-adjust-x" className={(num > 0) ? "schedule-grey-icon" : "schedule-grey-icon hidden"} onClick={deleteField}/>
+            <label className="schedule-text schedule-top-spacer-small" for="apptType">Appointment name</label>
+            <input className="schedule-input" name="apptType" type="text" placeholder="Eg. Checkup"/>
+            <label className="schedule-text schedule-top-spacer-small" for="apptDescript">Description</label>
+            <textarea className="schedule-input" name="apptDescript" rows="4" cols="5" placeholder="Eg. Annual appointment to check general health and vitals"/>
+            <span className="schedule-top-spacer">
+                <p id="duration" className="schedule-text inline schedule-left">Duration</p>
+                <span className="schedule-right">
+                    <input className="schedule-input inline schedule-horizontal-spacer" type="number" min="0" max="12"/>
+                    <p className="schedule-text inline">hrs</p>
+                    <input className="schedule-input inline schedule-horizontal-spacer" type="number" min="0" max="60"/>
+                    <p className="schedule-text inline">mins</p>
+                </span>
+            </span>
+        </div>
+    )
+}
 
 function ScheduleCreatorWidget(props) {
-    let availability = props.availability
-    let setAvailability = props.setAvailability
+    let deleteField = props.deleteField
     let days = props.days
     let setDays = props.setDays
     let num = props.num
-    let morning = [5, 6, 7, 8, 9, 10, 11]
-    let afternoon = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    morning = morning.map((hour) => (
-        <div className="schedule-hour">
-            <p className={"schedule-button" + (availability().has("" + hour + ":00") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":00")}>{hour}:00 am</p>
-            <p className={"schedule-button" + (availability().has("" + hour + ":15") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":15")}>{hour}:15 am</p>
-            <p className={"schedule-button" + (availability().has("" + hour + ":30") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":30")}>{hour}:30 am</p>
-            <p className={"schedule-button" + (availability().has("" + hour + ":45") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":45")}>{hour}:45 am</p>
-        </div>
+    const [inputNum, inputNumChange] = useState([])
+    
+    let weekdays = (["S", "M", "T", "W", "T", "F", "S"]).map((day, i) => (
+        <p key={i} className={"schedule-button-day" + (days()[i] === -1 ? " unselected" : days()[i] === num ? " selected" : " null")} onClick={() => setDays(i)}>{day}</p>
     ))
-    afternoon = afternoon.map((hour) => (
-        <div className="schedule-hour">
-            <p className={"schedule-button" + (availability().has("" + hour + ":00") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":00")}>{hour}:00 pm</p>
-            <p className={"schedule-button" + (availability().has("" + hour + ":15") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":15")}>{hour}:15 pm</p>
-            <p className={"schedule-button" + (availability().has("" + hour + ":30") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":30")}>{hour}:30 pm</p>
-            <p className={"schedule-button" + (availability().has("" + hour + ":45") ? " selected" : " unselected")} onClick={() => setAvailability("" + hour + ":45")}>{hour}:45 pm</p>
-        </div>
+    let inputFields = ([...inputNum]).map((i) => (
+        <span className="schedule-available-time" key={i}>
+            <TextField
+                className="schedule-spacer"
+                defaultValue="09:00"
+                type="time"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                inputProps={{
+                    step: 300, // 5 min
+                }}
+            />
+            <TextField
+                defaultValue="17:00"
+                type="time"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                inputProps={{
+                    step: 300, // 5 min
+                }}
+            />
+        </span>
     ))
     return (
-        <div className="schedule-widget">
-            <h1 className="schedule-title">Edit your Availability</h1>
-            <div className="schedule-days">
-                <p className={"schedule-button-day" + (!days()[0] ? " unselected" : days()[0] === num ? " selected" : " null")} onClick={() => setDays(0)}>S</p>
-                <p className={"schedule-button-day" + (!days()[1] ? " unselected" : days()[1] === num ? " selected" : " null")} onClick={() => setDays(1)}>M</p>
-                <p className={"schedule-button-day" + (!days()[2] ? " unselected" : days()[2] === num ? " selected" : " null")} onClick={() => setDays(2)}>T</p>
-                <p className={"schedule-button-day" + (!days()[3] ? " unselected" : days()[3] === num ? " selected" : " null")} onClick={() => setDays(3)}>W</p>
-                <p className={"schedule-button-day" + (!days()[4] ? " unselected" : days()[4] === num ? " selected" : " null")} onClick={() => setDays(4)}>T</p>
-                <p className={"schedule-button-day" + (!days()[5] ? " unselected" : days()[5] === num ? " selected" : " null")} onClick={() => setDays(5)}>F</p>
-                <p className={"schedule-button-day" + (!days()[6] ? " unselected" : days()[6] === num ? " selected" : " null")} onClick={() => setDays(6)}>S</p>
+        <div className="schedule-availability">
+            <FiXCircle className={(num > 0) ? "schedule-grey-icon" : "schedule-grey-icon hidden"} onClick={deleteField}/>
+            <div>
+                <div className="schedule-days">
+                    {weekdays}
+                </div>
             </div>
-            <div className="schedule-two-col">
-                <div className="schedule-col">
-                    <div className="schedule-morning schedule-times">
-                        <h1 className="schedule-header">Morning</h1>
-                        {morning}
-                    </div>
+            <div className="schedule-availability-inputs">
+                <span>
+                    <p id="from" className="schedule-text">From</p>
+                    <p id="to" className="schedule-text">To</p>
+                </span>
+                <div className="schedule-times">
+                    <span>
+                        <TextField
+                            className="schedule-spacer"
+                            defaultValue="09:00"
+                            type="time"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            inputProps={{
+                                step: 300, // 5 min
+                            }}
+                        />
+                        <TextField
+                            defaultValue="17:00"
+                            type="time"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            inputProps={{
+                                step: 300, // 5 min
+                            }}
+                        />
+                    </span>
+                    {inputFields}
+                    <span id="schedule-add-time" className="schedule-add-text" onClick={() => (inputNumChange(inputNum + [inputNum.length]))}><FiPlus className="schedule-icon"/>Add another time</span>
                 </div>
-                <div className="schedule-col">
-                    <div className="schedule-afternoon schedule-times">
-                        <h1 className="schedule-header">Afternoon</h1>
-                        <div className="schedule-hour">
-                            <p className={"schedule-button" + (availability().has("12:00") ? " selected" : " unselected")} onClick={() => setAvailability("12:00")}>12:00 pm</p>
-                            <p className={"schedule-button" + (availability().has("12:15") ? " selected" : " unselected")} onClick={() => setAvailability("12:15")}>12:15 pm</p>
-                            <p className={"schedule-button" + (availability().has("12:30") ? " selected" : " unselected")} onClick={() => setAvailability("12:30")}>12:30 pm</p>
-                            <p className={"schedule-button" + (availability().has("12:45") ? " selected" : " unselected")} onClick={() => setAvailability("12:45")}>12:45 pm</p>
-                        </div>
-                        {afternoon}
-                    </div>
-                </div>
+                {(inputNum.length != 0) && 
+                <FiMinus id="schedule-minus" className="schedule-add-text schedule-icon" onClick={() => (inputNumChange(inputNum.slice(0, inputNum.length - 1)))}/>}
             </div>
         </div>
     )
@@ -64,12 +119,15 @@ class ScheduleCreator extends Component {
     constructor(props) {
         super(props);
         this.days = this.days.bind(this)
-        this.availability = this.availability.bind(this)
+        this.addField = this.addField.bind(this)
+        this.deleteField = this.deleteField.bind(this)
         this.setDays = this.setDays.bind(this)
-        this.setAvailability = this.setAvailability.bind(this)
+        // this.setAvailability = this.setAvailability.bind(this)
         this.state = {
-            days: [0,0,0,0,0,0,0],
-            availability: [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set()],
+            days: [-1,-1,-1,-1,-1,-1,-1],
+            // availability: [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set()],
+            availabilities: [0],
+            appointments: [0, 1],
         }
     }
 
@@ -77,15 +135,10 @@ class ScheduleCreator extends Component {
         return this.state.days
     }
 
-    availability(num) {
-        return this.state.availability[num]
-    }
-
     setDays(day, num) {
-        console.log(num)
-        let days = this.state.days
+        let days = [...this.state.days]
         if (days[day] === num) {
-            days[day] = 0
+            days[day] = -1
         } else {
             days[day] = num
         }
@@ -94,33 +147,100 @@ class ScheduleCreator extends Component {
         })
     }
 
-    setAvailability(num, time) {
-        console.log(time)
-        let availability = this.state.availability
-        if (availability[num].has(time)) {
-            console.log(availability)
-            availability[num].delete(time)
-            console.log(availability[num].has(time))
+    addField(type) {
+        if (type === "availability") {
+            let a = this.state.availabilities
+            a.push(a[a.length - 1] + 1)
+            this.setState({
+                availabilities: a 
+            })
         } else {
-            availability[num].add(time)
+            let a = this.state.appointments
+            a.push(a[a.length - 1] + 1)
+            this.setState({
+                appointments: a 
+            })
         }
-        this.setState({
-            availability: availability
-        })
     }
 
+    deleteField(type, num) {
+        if (type === "availability") {
+            let a = [...this.state.availabilities]
+            let i = a.indexOf(num)
+            a = a.slice(0, i).concat(a.slice(i+1, a.length))
+            console.log(a)
+            this.setState({
+                availabilities: a
+            })
+        } else {
+            let a = [...this.state.appointments]
+            let i = a.indexOf(num)
+            a = a.slice(0, i).concat(a.slice(i+1, a.length))
+            console.log(a)
+            this.setState({
+                appointments: a
+            })
+        }
+        
+    }
+
+    // setAvailability(num, time) {
+    //     console.log(time)
+    //     let availability = [...this.state.availability]
+    //     if (availability[num].has(time)) {
+    //         console.log(availability)
+    //         availability[num].delete(time)
+    //         console.log(availability[num].has(time))
+    //     } else {
+    //         availability[num].add(time)
+    //     }
+    //     this.setState({
+    //         availability: availability
+    //     })
+    // }
+
     render() {
+        let availabilities = ([...this.state.availabilities]).map((num) => (
+            <ScheduleCreatorWidget key={num} num={num} days={this.days} setDays={(day) => this.setDays(day, num)} deleteField={() => this.deleteField("availability", num)}/>
+        ))
+        let appointments = ([...this.state.appointments]).map((num) => (
+            <AppointmentTypeWidget key={num} num={num} deleteField={() => this.deleteField("appointments", num)}/>
+        ))
         return (
-            <div>
-                <h1>Edit your Availability</h1>
-                <ScheduleCreatorWidget num={1} days={this.days} availability={() => this.availability(0)} setDays={(day) => this.setDays(day, 1)} setAvailability={(time) => this.setAvailability(0, time)}/>
-                <ScheduleCreatorWidget num={2} days={this.days} availability={() => this.availability(1)} setDays={(day) => this.setDays(day, 2)} setAvailability={(time) => this.setAvailability(1, time)}/>
-                <ScheduleCreatorWidget num={3} days={this.days} availability={() => this.availability(2)} setDays={(day) => this.setDays(day, 3)} setAvailability={(time) => this.setAvailability(2, time)}/>
-                <ScheduleCreatorWidget num={4} days={this.days} availability={() => this.availability(3)} setDays={(day) => this.setDays(day, 4)} setAvailability={(time) => this.setAvailability(3, time)}/>
-                <ScheduleCreatorWidget num={5} days={this.days} availability={() => this.availability(4)} setDays={(day) => this.setDays(day, 5)} setAvailability={(time) => this.setAvailability(4, time)}/>
-                <ScheduleCreatorWidget num={6} days={this.days} availability={() => this.availability(5)} setDays={(day) => this.setDays(day, 6)} setAvailability={(time) => this.setAvailability(5, time)}/>
-                <ScheduleCreatorWidget num={7} days={this.days} availability={() => this.availability(6)} setDays={(day) => this.setDays(day, 7)} setAvailability={(time) => this.setAvailability(6, time)}/>
-            </div>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <form className="schedule-creator">
+                    <div className="schedule-section">
+                        <h1 className="schedule-title">Set your Availability</h1>
+                        {availabilities}
+                    <span className="schedule-add-text schedule-indent" onClick={() => this.addField("availability")}><FiPlus className="schedule-icon"/>Add another day</span>
+                    </div>
+                    <div className="schedule-section">
+                        <h1 className="schedule-title">Appointment Types</h1>
+                        <div className="schedule-appointments-container">
+                            {appointments}
+                        </div>
+                        <span className="schedule-add-text schedule-indent" onClick={() => this.addField("appointment")}><FiPlus className="schedule-icon"/>Add another type</span>
+                    </div>
+                    <div className="schedule-section">
+                        <h1 className="schedule-title">Time between Appointments</h1>
+                        <div className="schedule-breaks">
+                            <span>
+                                <p className="schedule-text inline">Leave</p>
+                                <input className="schedule-input inline schedule-horizontal-spacer" type="number" min="0" max="60" defaultValue="0"/>
+                                <p className="schedule-text inline">mins between appointments</p>
+                            </span>
+                            <span className="schedule-top-spacer">
+                                <input type="checkbox" name="minimizeGaps"/>
+                                <label id="minimize-gaps" className="schedule-text" for="minimizeGaps">Minimize small gaps in my schedule</label> 
+                            </span>
+                        </div>
+                    </div>
+                    <span className="schedule-right">
+                        <button type="button" className="cancel-button">Cancel</button>
+                        <button type="submit" className="submit-button">Save</button>
+                    </span>
+                </form>
+            </MuiPickersUtilsProvider>
         )
     }
     
@@ -137,7 +257,9 @@ export default class ProviderSchedule extends Component {
 
     render() {
         return(
-            <ScheduleCreator/>
+            <div className="page">
+                <ScheduleCreator/>
+            </div>
         )
         // if (!this.state.info.schedule || this.state.edit) {
         //     return (

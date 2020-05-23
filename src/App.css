@@ -435,7 +435,7 @@ input[type="radio"]:checked:before {
   position: relative;
   right: 2px;
 }
-
+/* 
 input[type="checkbox"]::before {
   content: "";
   display: block;
@@ -461,7 +461,7 @@ input[type="checkbox"]:checked:before {
   z-index: 2;
   position: relative;
   right: 2px;
-}
+} */
 
 .login-checkbox {
   margin: 30px 0 10px 0;
@@ -547,13 +547,22 @@ select {
 /*** SCHEDULE ***/
 /****************/
 
+.schedule-creator {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-bottom: 35vh;
+}
+
 .schedule-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  justify-content: center;
-  width: 80vw;
+  justify-content: space-between;
   justify-self: center;
-  margin-bottom: 25px;
+  
+  width: 70%;
+  margin: 0 auto;
+  position: relative;
+  top: 30px;
 }
 
 .schedule-hour {
@@ -565,6 +574,8 @@ select {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+  position: relative;
+  bottom: 80px;
 }
 
 .schedule-button {
@@ -582,29 +593,88 @@ select {
   cursor: pointer;
 }
 
-.schedule-widget {
-  display: grid;
-  margin-bottom: 60px;
-}
-
-.schedule-two-col {
+.schedule-availability {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
-  justify-content: center;
-}
-
-.schedule-col {
-  margin: 0 20px;
-  padding: 20px;
+  justify-items: center;
+  padding: 0px 20px;
   background-color: white;
   border-radius: 15px;
-  height: 600px;
+  margin-bottom: 20px;
+}
+
+.schedule-availability-inputs {
+  margin: 0 auto;
+  position: relative;
+  top: 45px;
 }
 
 .schedule-title {
   font-family: "Muli", sans-serif;
-  font-size: 24px;
+  color: var(--darkGrey);
+  font-size: 18px;
+  margin-left: 15px;
+}
+
+.schedule-add-text {
+  font-family: "Muli", sans-serif;
+  color: var(--blue);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#schedule-add-time {
+  margin-top: 10px;
+}
+
+.schedule-indent {
+  position: relative;
+  left: 10px;
+}
+
+.schedule-text {
+  font-family: "Muli", sans-serif;
+  color: var(--darkGrey);
+  font-size: 16px;
+}
+
+#from {
+  position: relative;
+  right: 50px;
+}
+
+#to {
+  position: relative;
+  left: 150px;
+  bottom: 37px;
+}
+
+.schedule-icon {
+  position: relative;
+  top: 2px;
+  margin-right: 5px;
+}
+
+#schedule-minus {
+  position: relative;
+  left: 320px;
+  top: -138px;
+}
+
+.schedule-grey-icon {
+  color: var(--blue);
+  font-size: 20px;
+  align-self: flex-end;
+  position: relative;
+  top: 13px;
+  left: 8px;
+  margin-bottom: -15px;
+}
+
+.hidden {
+  display: none;
+  pointer-events: none;
 }
 
 .schedule-header {
@@ -615,12 +685,11 @@ select {
 
 .schedule-button-day {
   font-family: "Muli", sans-serif;
-  font-size: 22px;
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.5em;
+  font-size: 18px;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
   padding: 8px;
-  /* border: 0.05em solid; */
   text-align: center;
   align-self: center;
   justify-self: center;
@@ -636,4 +705,138 @@ select {
 
 .null {
   color: #b5b5b5;
+}
+
+.MuiInputBase-root {
+  background-color: var(--grey);
+  border-radius: 5px;
+  font-family: "Muli", sans-serif !important;
+  padding: 2px 0px 2px 10px;
+}
+
+.schedule-spacer {
+  margin-right: 60px !important;
+}
+
+.MuiInputBase-root::after {
+  display: none;
+}
+
+.MuiInputBase-root::before {
+  display: none;
+}
+
+.MuiFormLabel-root {
+  font-family: "Muli", sans-serif !important;
+}
+
+.schedule-available-time {
+  margin-top: 10px;
+}
+
+.schedule-appointments {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 380px;
+  padding: 20px 30px;
+  background-color: white;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}
+
+.schedule-left {
+  float: left;
+}
+
+.schedule-right {
+  float: right;
+}
+
+#schedule-adjust-x {
+  position: relative;
+  top: -7px;
+}
+
+.inline {
+  display: inline;
+}
+
+.schedule-input {
+  background-color: var(--grey);
+  border: none;
+  border-radius: 5px;
+  font-family: "Muli", sans-serif;
+  font-size: 14px;
+  color: var(--darkGrey);
+  outline: none;
+  padding: 10px;
+  resize: none;
+}
+
+.schedule-top-spacer {
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+.schedule-top-spacer-small {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.schedule-horizontal-spacer {
+  margin: 0 5px 0 10px;
+}
+
+#duration {
+  position: relative;
+  bottom: 8px;
+}
+
+.schedule-appointments-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.schedule-section {
+  margin-top: 40px;
+}
+
+.schedule-breaks {
+  padding: 20px 30px;
+  background-color: white;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#minimize-gaps {
+  margin-left: 5px;
+}
+
+.cancel-button {
+  font-size: 16px;
+  font-family: "Muli";
+  color: var(--blue);
+  width: 100px;
+  height: 45px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.submit-button {
+  font-size: 16px;
+  font-family: "Muli";
+  background-color: var(--blue);
+  color: var(--grey);
+  width: 100px;
+  height: 45px;
+  border-radius: 45px;
+  cursor: pointer;
+  outline: none;
 }
