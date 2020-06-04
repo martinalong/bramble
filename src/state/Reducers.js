@@ -1,16 +1,15 @@
 import { combineReducers } from 'redux'
 
-const authReducer = (state = {auth: null, info: null}, action) => {
+const authReducer = (state = {login: false, accountType: null}, action) => {
     switch(action.type) {
       case "LOGIN":
         return {
-          auth: action.auth,
-          info: action.info
+          login: true,
+          accountType: action.accountType
         }
       case "LOGOUT":
         return {
-          auth: null,
-          info: null
+          login: false
         }
       default:
         return state;

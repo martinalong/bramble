@@ -16,9 +16,9 @@ function AppointmentTypeWidget(props) {
     return (
         <div className="schedule-appointments">
             <FiXCircle id="schedule-adjust-x" className={(num > 0) ? "schedule-grey-icon" : "schedule-grey-icon hidden"} onClick={deleteField}/>
-            <label className="schedule-text schedule-top-spacer-small" for="apptType">Appointment name</label>
+            <label className="schedule-text schedule-top-spacer-small" htmlFor="apptType">Appointment name</label>
             <input className="schedule-input" name="apptType" type="text" placeholder="Eg. Checkup"/>
-            <label className="schedule-text schedule-top-spacer-small" for="apptDescript">Description</label>
+            <label className="schedule-text schedule-top-spacer-small" htmlFor="apptDescript">Description</label>
             <textarea className="schedule-input" name="apptDescript" rows="4" cols="5" placeholder="Eg. Annual appointment to check general health and vitals"/>
             <span className="schedule-top-spacer">
                 <p id="duration" className="schedule-text inline schedule-left">Duration</p>
@@ -129,6 +129,24 @@ class ScheduleCreator extends Component {
             availabilities: [0],
             appointments: [0, 1],
         }
+
+    }
+
+    //credentials: where you'd put a cookie
+    async componentDidMount() {
+        let person = {
+            email: "max@gmail.com", 
+            password: "secret"
+        }
+        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
+        let response = await fetch("http://localhost:5000/login", { //if development, localhost. if production, real domain name
+            method: 'POST',
+            headers: requestHeaders,
+            body: JSON.stringify(person)
+        });
+        let data = await response.json();  
+        console.log("got here") 
+        console.log(data)
     }
 
     days() {
@@ -226,12 +244,12 @@ class ScheduleCreator extends Component {
                         <div className="schedule-breaks">
                             <span>
                                 <p className="schedule-text inline">Leave</p>
-                                <input className="schedule-input inline schedule-horizontal-spacer" type="number" min="0" max="60" defaultValue="0"/>
+                                <input name="bufferTime" className="schedule-input inline schedule-horizontal-spacer" type="number" min="0" max="60" defaultValue="0"/>
                                 <p className="schedule-text inline">mins between appointments</p>
                             </span>
                             <span className="schedule-top-spacer">
-                                <input type="checkbox" name="minimizeGaps"/>
-                                <label id="minimize-gaps" className="schedule-text" for="minimizeGaps">Minimize small gaps in my schedule</label> 
+                                <input name="minimizeGaps" type="checkbox"/>
+                                <label id="minimize-gaps" className="schedule-text" htmlFor="minimizeGaps">Minimize small gaps in my schedule</label> 
                             </span>
                         </div>
                     </div>
@@ -239,6 +257,7 @@ class ScheduleCreator extends Component {
                         <button type="button" className="cancel-button">Cancel</button>
                         <button type="submit" className="submit-button">Save</button>
                     </span>
+                    {this.message}
                 </form>
             </MuiPickersUtilsProvider>
         )

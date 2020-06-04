@@ -27,13 +27,6 @@ export const practiceCollection = mongodb.db("data").collection("practiceCollect
 export const appointmentCollection = mongodb.db("data").collection("appointmentCollection");
 
 function App() {
-  let auth = useSelector(state => state.auth)
-  let info = useSelector(state => state.info)
-  let accountType = null
-  if (info) {
-    accountType = info.accountType
-  }
-  console.log("info", info) //remove later
   return (
     <div className="app">
       <Router>
@@ -49,31 +42,31 @@ function App() {
           </Route>
           
           <Route exact path="/login">
-            <Login type="login" auth={auth}/>
+            <Login type="login"/>
           </Route>
 
-          <Route exact path="/first-login">
-            <Login type="first-login"/>
+          <Route exact path="/onboarding/provider">
+            <Onboarding type="provider"/>
           </Route>
 
-          <Route exact path="/onboarding">
-            <Onboarding auth={auth}/>
+          <Route exact path="/onboarding/patient">
+            <Onboarding type="patient"/>
           </Route>
 
           <Route exact path="/dashboard">
-            <Dashboard info={info}/>
+            <Dashboard/>
           </Route>
 
           <PrivateRoute exact path="/communication">
-            <Chat info={info}/>
+            <Chat/>
           </PrivateRoute>
 
           <PrivateRoute exact path="/account">
-            <Account auth={auth}/>
+            <Account/>
           </PrivateRoute>
 
           <Route exact path="/appointments">
-            <ProviderSchedule info={info}/>
+            <ProviderSchedule/>
           </Route>
 
           {/* <PrivateRoute exact path="/appointments">
@@ -86,11 +79,11 @@ function App() {
           </PrivateRoute> */}
 
           <PrivateRoute exact path="/patients">
-            <Patients auth={auth}/>
+            <Patients/>
           </PrivateRoute>
 
           <PrivateRoute exact path="/doctors">
-            <Doctors auth={auth}/>
+            <Doctors/>
           </PrivateRoute>
 
           <Route component={Error}/>
@@ -102,7 +95,7 @@ function App() {
 }
 
 function PrivateRoute({ children, ...rest }) {
-  let authenticated = useSelector(state => state.auth)
+  let authenticated = useSelector(state => state.login)
   let path = "/login"
   return (
     <Route

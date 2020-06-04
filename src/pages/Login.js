@@ -2,34 +2,33 @@ import React, { Component, useState } from 'react'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
 import {useDispatch} from 'react-redux';
 import {useHistory, useLocation, Link} from 'react-router-dom'
-import { Stitch, 
-    RemoteMongoClient, 
-    BSON, 
-    UserPasswordAuthProviderClient, 
-    UserPasswordCredential 
-} from "mongodb-stitch-browser-sdk";
-import { patientCollection } from '../App.js'
 import { useForm } from "react-hook-form";
 
+let serverAddress = "http://localhost:5000"
+
 function SignupForm(props) {
+    let submit = props.submit
     let [showPw, toggleShow] = useState(false)
     let [completed, markCompleted] = useState(false)
     let [error, toggleError] = useState()
     let [showAlert, toggleAlert] = useState(false)
     const { register, handleSubmit, errors } = useForm();
-    const onSubmit = (data) => {
-        let email = data.email
-        let password = data.password
-        const emailPasswordClient = Stitch.defaultAppClient.auth
-        .getProviderClient(UserPasswordAuthProviderClient.factory);
 
-        emailPasswordClient.registerWithEmail(email, password)
-        .then(() => markCompleted(true))
-        .catch((err) => {
-            if (err.errorCode === 46) {
-                toggleError("It looks like that email is already in use")
-            }
-        });
+    const onSubmit = async (data) => {
+        const {email, password, type} = data
+        let person = { email, password, type }
+        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
+        let response = await fetch(serverAddress + "/session/register", { //if development, localhost. if production, real domain name
+                method: 'POST',
+                headers: requestHeaders, 
+                body: JSON.stringify(person)
+            });
+        if (response.status === 200) {
+            submit(type, "/onboarding/" + type)
+        } else {
+            let object = await response.json()
+            toggleError(object.error)
+        }
     } 
     
     let passwordMatch = (value) => {
@@ -37,55 +36,50 @@ function SignupForm(props) {
         return false;
     }
 
-    if (completed) {
-        return (
-            <div className="login-form page">
-                <p className="login-text">
-                    Signup successful! Please check your email for a confirmation link to finish signing up.
-                    <Link to="/onboarding">Temp Link</Link>
-                </p> 
-            </div>
-        )
-    }
     return (
         <div className="page">
             <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
                 <input 
                     id="email" 
                     className={errors.email ? "login-input red" : "login-input"} 
-                    type="email" 
+                    type="text" 
                     name="email" 
                     placeholder="Email" 
-                    ref={register({ required: true, pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ })}/>
+                    ref={register({ required: true, pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ })}/>
                 {errors.email && errors.email.type === "pattern" && <p className="login-text red-words">Please enter a valid email</p>}
-                <input 
-                    id="password" 
-                    className={errors.password ? "login-input red" : "login-input"} 
-                    type={showPw ? "text" : "password"} 
-                    name="password" 
-                    placeholder="Password" 
-                    ref={register({ required: true, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/ })}
-                    onFocus={() => toggleAlert(true)}
-                    onBlur={() => toggleAlert(false)}
-                    />
-                {showPw ? <FiEyeOff className="login-icon" onClick={() => toggleShow(false)}/> : <FiEye className="login-icon" onClick={() => toggleShow(true)}/>}
+                <div id="password-container">
+                    <input 
+                        id="password" 
+                        className={errors.password ? "login-input login-input2 red" : "login-input login-input2"} 
+                        type={showPw ? "text" : "password"} 
+                        name="password" 
+                        placeholder="Password" 
+                        ref={register({ required: true, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/ })}
+                        onFocus={() => toggleAlert(true)}
+                        onBlur={() => toggleAlert(false)}
+                        />
+                    {showPw ? <FiEyeOff className="login-icon" onClick={() => toggleShow(false)}/> : <FiEye className="login-icon" onClick={() => toggleShow(true)}/>}
+                </div>
                 <div className={showAlert || (errors.password && errors.password.type === "pattern") ? "full-height" : "zero-height"}>
-                    <p className={errors.password && errors.password.type === "pattern" ? "login-subscript red-words" : "login-subscript"}>
-                        <div>• Minimum eight characters</div>
-                        <div>• Must contain one uppercase, one lowercase, and one number</div>
+                    <p className={errors.password && errors.password.type === "pattern" ? "login-text red-words" : "login-text"}>
+                        Minimum eight characters. Must contain one uppercase, one lowercase, and one number.
                     </p>
                 </div>
                 <input 
                     id="passwordConfirm" 
-                    className={errors.passwordConfirm && errors.passwordConfirm.type === "required" ? "login-input login-confirm-pw red" : "login-input login-confirm-pw"} 
+                    className={errors.passwordConfirm ? "login-input red" : "login-input"} 
                     type="password" 
                     name="passwordConfirm" 
                     placeholder="Confirm your password" 
                     ref={register({ required: true, validate: passwordMatch })}/>
                 {errors.passwordConfirm && errors.passwordConfirm.type === "validate" && <p className="login-text red-words">The passwords do not match</p>}
-                {error && <p className="login-text red-words">{error}</p>}
+                <div className="login-type">
+                    <label className={errors.type ? "login-text red-words login-option" : "login-text login-option"}><input className="login-dot" type="radio" name="type" value="patient" ref={register({ required: true})}/>Patient</label>
+                    <label className={errors.type ? "login-text red-words login-option" : "login-text login-option"}><input className="login-dot" type="radio" name="type" value="provider" ref={register({ required: true})}/>Provider</label>
+                </div>
+                {error && <p className="login-text login-centered red-words">{error}</p>}
                 <button className="login-button" type="submit">Sign up</button>
-                <p className="login-text login-centered">Already have an account? <Link to="/login">Log in</Link></p> 
+                <p id="switch-login" className="login-text login-centered">Already have an account? <Link to="/login">Log in</Link></p> 
             </form> 
         </div>
     )
@@ -94,19 +88,26 @@ function SignupForm(props) {
 function LoginForm(props) {
     let submit = props.submit 
     const { register, handleSubmit, errors } = useForm();
-    const onSubmit = (data) => {
-        let email = document.getElementById("email").value
-        let password = document.getElementById("password").value
-        const app = Stitch.defaultAppClient
-        const credential = new UserPasswordCredential(email, password)
-        app.auth.loginWithCredential(credential)
-        .then((authedUser) => {
-            submit(authedUser.id)
-        })
-        .catch(err => {
-            console.log(err);
-            toggleError("The email and password provided don't match our records");
-        })
+    const onSubmit = async (data) => {
+        let person = { 
+            email: data.email, 
+            password: data.password 
+        }
+        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
+        
+        let response = await fetch(serverAddress + "/session/login", {
+                method: 'POST',
+                headers: requestHeaders, 
+                body: JSON.stringify(person)
+            });
+        if (response.status === 200) {
+            console.log("success")
+            let object = await response.json()
+            submit(object.type)
+        } else {
+            let object = await response.json()
+            toggleError(object.error)
+        }
     } 
     let [showPw, toggleShow] = useState(false)
     let [error, toggleError] = useState()
@@ -115,17 +116,19 @@ function LoginForm(props) {
         <div className="page">
             <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
                 <input id="email" className={errors.email ? "login-input red" : "login-input"} type="email" name="email" placeholder="Email" ref={register({ required: true})}/>
-                <input id="password" className={errors.password ? "login-input red" : "login-input"} type={showPw ? "text" : "password"} name="password" placeholder="Password" ref={register({ required: true})}/>
-                {showPw ? <FiEyeOff className="login-icon" onClick={() => toggleShow(false)}/> : <FiEye className="login-icon" onClick={() => toggleShow(true)}/>}
-                <Link className="login-text login-subscript2" to="/password-reset">Forgot password?</Link>
+                <div id="password-container">
+                    <input id="password" className={errors.password ? "login-input login-input2 red" : "login-input login-input2"} type={showPw ? "text" : "password"} name="password" placeholder="Password" ref={register({ required: true})}/>
+                    {showPw ? <FiEyeOff className="login-icon" onClick={() => toggleShow(false)}/> : <FiEye className="login-icon" onClick={() => toggleShow(true)}/>}
+                </div>
+                <Link className="login-text" to="/password-reset">Forgot password?</Link>
                 {errors.email || errors.password ?
-                <p className="login-text red-words">Please make sure all fields are filled out</p> :
+                <p className="login-text login-centered red-words">Please make sure all fields are filled out</p> :
                 error ? 
-                <p className="login-text red-words">{error}</p> :
+                <p className="login-text login-centered red-words">{error}</p> :
                 <div></div>
                 }
-                <button type="submit" className="login-button">Sign in</button>
-                <p className="login-text login-centered">Don't have an account? <Link to="/signup">Sign up</Link></p> 
+                <button id="sign-in" type="submit" className="login-button">Log in</button>
+                <p id="switch-login" className="login-text login-centered">Don't have an account? <Link to="/signup">Sign up</Link></p> 
             </form>
         </div>
     )
@@ -155,22 +158,21 @@ export default function Login(props) {
     }
 
     let { from } = location.state || { from: { pathname: "/dashboard" } } 
-    if (type === "first-login") {
-        from = { pathname: "/onboarding" }
-    } 
 
-    let login = (auth) => {
-        (patientCollection.findOne({"user_id": auth}))
-        .then(info => {
-            console.log("[MongoDB Stitch] Connected to Stitch. Logged in")
-            dispatch({type: "LOGIN", auth: auth, info: info})
-        })
-        history.replace(from)
+    let login = (type) => {
+        dispatch({type: "LOGIN", accountType: type}) 
+        history.replace({ pathname: "/onboarding/provider" })
+        // history.replace(from)
+    }
+
+    let register = (type, path) => {
+        dispatch({type: "LOGIN", accountType: type}) 
+        history.replace({ pathname: path })
     }
     
     if (type === "signup") {
         return (
-            <SignupForm/>
+            <SignupForm submit={register}/>
         )
     } else { 
         return (

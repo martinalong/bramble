@@ -5,11 +5,8 @@ import { NavLink } from 'react-router-dom'
 import {useSelector} from 'react-redux';
 
 export default function Navbar() {
-    let info = useSelector(state => state.info)
-    let accountType = null
-    if (info) {
-        accountType = info.accountType
-    }
+    let accountType = useSelector(state => state.accountType)
+    let login = useSelector(state => state.login)
     if (!accountType) {
         return (
             <div className="nav">
@@ -36,7 +33,14 @@ export default function Navbar() {
                 <NavLink className="nav-link" activeClassName="nav-link-underline" to={accountType === "patient" ? "/doctors" : "/patients"}>{accountType === "patient" ? "Doctors" : "Patients"}</NavLink>
                 <NavLink className="nav-link" activeClassName="nav-link-underline" to="/communication">Communication</NavLink>
                 <NavLink className="nav-link" activeClassName="nav-link-underline" to="/appointments">{accountType === "patient" ? "Appointments" : "Schedule"}</NavLink>
+                {login ? 
                 <NavLink className="nav-link" activeClassName="nav-link-underline" to="/account">Account</NavLink> 
+                :
+                <div>
+                <NavLink className="nav-link" to="/login">Log in</NavLink>
+                <NavLink className="nav-button" to="/signup">Sign up</NavLink>
+                </div>
+                }
             </div>
         </div>
     )

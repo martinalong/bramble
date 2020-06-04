@@ -74,7 +74,7 @@ input {
   font-size: 15px;
   transform: scaleY(0.95);
   border: solid 1px var(--darkGrey);
-  border-radius: 5px;
+  border-radius: 20%/50%;
   padding: 5px 10px;
   color: var(--darkGrey);
   white-space: nowrap;
@@ -116,29 +116,50 @@ input {
 /*************/
 
 .login-form {
-  width: 500px;
+  position: relative;
+  width: 350px;
   margin: auto;
-  padding-top: 20vh;
-}
-
-.signup-form {
-  padding-top: 10vh;
+  margin-top: 15vh;
+  padding: 40px 30px;
+  border-radius: 15px;
+  background-color: white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .login-text {
   font-family: "Muli", sans-serif;
-  font-size: 16px;
+  font-size: 14px;
+  color: var(--darkGrey);
+  margin: 0;
+  margin-right: auto;
+  margin-bottom: 5px;
+  margin-left: 10px;
 }
 
 .login-input {
-  width: 100%;
-  margin: 10px 0;
+  width: 350px;
+  background-color: var(--grey);
+  border: none;
+  border-radius: 5px;
   font-family: "Muli", sans-serif;
-  font-size: 16px;
-  border-style: none;
-  background-color: transparent;
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--blue);
+  font-size: 14px;
+  outline: none;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.login-type {
+  margin-top: 10px;
+  width: 250px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-left: 25px;
+}
+
+.login-input2 {
+  width: 330px;
 }
 
 .login-subscript {
@@ -152,54 +173,55 @@ input {
 
 .login-subscript2 {
   position: relative;
-  bottom: 9px;
-  right: 17px;
+  /* bottom: 9px;
+  right: 17px; */
+  left: 17px;
+  top: 5px;
   font-size: 14px;
 }
 
 .red-words {
-  color: var(--primaryColor)
+  color: var(--primaryColor);
 }
 
 .login-icon {
-  position: relative;
+  position: absolute;
   font-size: 18px;
-  bottom: 33px;
-  left: 480px;
-  color: var(--blue);
+  top: 15px;
+  right: 10px;
+  /* bottom: 33px;
+  left: 90px; */
+  color: var(--darkGrey);
   cursor: pointer;
 }
 
 .login-button {
-  text-transform: uppercase;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
   font-family: "Muli";
-  letter-spacing: 0.3em;
-
   background-color: var(--blue);
   color: var(--grey);
-  width: 400px;
-  margin-left: 50px;
+  width: 90%;
   height: 45px;
   border-radius: 45px;
   cursor: pointer;
   outline: none;
+  margin: 0 auto;
   margin-top: 30px;
+  border: none;
 }
 
-.small-login-button {
-  width: 205px;
-  margin-left: 30px;
-  font-size: 14px;
+#sign-in {
+  margin-top: 50px;
 }
 
-.login-confirm-pw {
+#password-container {
   position: relative;
-  bottom: 20px;
 }
 
 .login-centered {
   text-align: center;
+  margin: 5px auto;
 }
 
 .login-back {
@@ -215,49 +237,93 @@ input {
   margin: 10px auto;
 }
 
-.login-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin: 0 auto;
-  padding-top: 10vh;
-  width: 50vw;
-  justify-items: center;
+/******************/
+/*** ONBOARDING ***/
+/******************/
+
+.onboarding-container {
+  margin: auto;
+  background-color: white;
+  border-radius: 15px;
+  padding: 20px 0px 40px 0px;
+  margin-top: 100px;
+  width: 500px;
 }
 
-.login-step {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  align-items: center;
-  justify-items: start;
-  grid-column-gap: 15px;
+.onboarding-form {
+  margin: auto;
+  position: relative;
+  width: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-.login-step-number {
-  font-family: "Muli";
-  font-size: 16px;
-  color: var(--blue);
-  width: 1em;
-  height: 1em;
-  line-height: 1em;
-  padding: 8px;
-  border: 0.09em solid var(--blue);
+.insurance-form {
+  margin-top: 30px;
+  width: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#practice-info {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.option-large {
+  /* border: 1px solid var(--blue); */
+  border-radius: 10px;
+  /* box-shadow: 0px 0px 3px 0px; */
+  width: 120px;
+  height: 90px;
+  background-color: var(--grey);
   text-align: center;
-  align-self: center;
-  justify-self: center;
-  border-radius: 50%;
+  
 }
 
-.login-step-check {
-  background-color: var(--blue);
-  color: var(--grey);
+.large-icon {
+  font-size: 40px;
+  color: black;
 }
 
-.login-step-text {
-  font-family: "Muli";
-  font-size: 15px;
-  text-transform: uppercase;
-  transform: scaleY(0.9);
-  font-weight: 300;
+.white-text {
+  color: black;
+}
+
+.onboarding-input {
+  width: 400px;
+  background-color: var(--grey);
+  border: none;
+  border-radius: 5px;
+  font-family: "Muli", sans-serif;
+  font-size: 16px;
+  outline: none;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.onboarding-text {
+  font-family: "Muli", sans-serif;
+  font-size: 16px;
+  color: var(--darkGrey);
+  margin: 0;
+}
+
+#dob {
+  width: 380px;
+  font-size: 14px;
+  position: relative;
+  margin-top: 5px;
+}
+
+.onboarding-spacer {
+  margin-top: 5px;
+}
+
+.onboarding-wide-spacer {
+  margin-top: 15px;
 }
 
 .month {
@@ -278,16 +344,26 @@ input {
 }
 
 .login-dropdown {
-  width: 100px;
   height: 40px;
   outline: none;
   font-family: "Muli", sans-serif;
   font-size: 16px;
-  border-color: transparent;
-  background-color: transparent;
+  padding: 0 5px;
+  border: none;
+  background-color: var(--grey);
+  border-radius: 5px;
+  margin: 5px 0;
+  width: 195px;
+  height: 40px;
+  color: var(--mediumGrey);
+}
+/* 
+#sex {
+  width: 200px;
+} */
 
-  position: relative;
-  right: 8px;
+.black-text {
+  color: black;
 }
 
 .login-two-col {
@@ -295,18 +371,22 @@ input {
   grid-template-columns: 1fr 1fr;
 }
 
-.line {
-  position: relative;
-  width: 232px;
-  bottom: 4px;
-  border-bottom: 1px solid var(--blue);
-}
-
 .login-header {
-  text-transform: uppercase;
   font-size: 18px;
   color: var(--blue);
   font-weight: 600;
+  width: 400px;
+  margin-bottom: 10px;
+}
+
+.login-title {
+  font-size: 24px;
+  color: var(--darkGrey);
+  font-weight: 600;
+  width: 400px;
+  text-align: center;
+  display: block;
+  padding-bottom: 15px;
 }
 
 .signup-subscript {
@@ -320,35 +400,23 @@ input {
   font-size: 12px;
 }
 
-.two-col {
-  display: grid;
-  grid-template-columns: 2fr 2fr;
-}
-
-.three-col {
-  display: grid;
-  grid-template-columns: 1.2fr 1.8fr 3fr;
-  margin-bottom: 20px;
-}
-
 .hide {
   display: none;
   pointer-events: none;
 }
 
-.ssn {
-  height: 18px;
-}
-
-#subscriber-info {
-  position: relative;
-  top: 15px;
-  font-size: 17px;
-}
-
 .full-height {
   max-height: 1600px;
   transition: max-height 0.2s ease-in;
+}
+
+#insurance-text {
+  margin-bottom: 10px;
+  margin-right: 30px;
+}
+
+#bottom-spacer {
+  margin-bottom: 30px;
 }
 
 .show-insurance {
@@ -386,10 +454,6 @@ input {
   font-family: "Muli", sans-serif;
 }
 
-.insurance {
-  margin-top: 30px;
-}
-
 #login-plus {
   font-size: 18px;
   width: 0.7em;
@@ -402,21 +466,19 @@ input {
   color: var(--grey);
 }
 
-.login-option {
-  margin-right: 20px;
-}
-
 .login-dot {
-  margin: 0 10px;
+  position: relative;
+  top: 2px;
+  margin-right: 10px;
 }
-
+/* 
 input[type="radio"]::before {
   content: "";
   display: block;
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: var(--grey);
+  background: white;
   border: solid 2px var(--blue);
   z-index: 2;
   position: relative;
@@ -434,7 +496,7 @@ input[type="radio"]:checked:before {
   z-index: 2;
   position: relative;
   right: 2px;
-}
+} */
 /* 
 input[type="checkbox"]::before {
   content: "";
@@ -487,60 +549,29 @@ input[type="checkbox"]:checked:before {
   pointer-events: none !important;
 }
 
+.half-wide {
+  width: 175px;
+}
+
 .input {
-  background-color: transparent;
   border-style: none;
-  border-bottom: 1px solid var(--blue);
-  padding-bottom: 5px;
   font-size: 16px;
   font-family: "Muli", sans-serif;
-  position: relative;
-  top: 8px;
-  width: 90px;
+  width: 175px;
+  height: 20px;
+  margin-right: auto;
 }
 
-#gender {
-  position: relative;
-  margin-bottom: -10px;
-}
-
-#login-radio-alert {
-  position: relative;
-  bottom: 69px;
-  left: 200px;
+#switch-login {
+  margin-top: 10px;
 }
 
 .red {
-  border-bottom: 1px solid var(--primaryColor);
+  border: 1px solid var(--primaryColor);
 }
 
-
-#line-state {
-  width: 232px;
-}
-
-#phoneNumber {
-  width: 230px;
-}
-
-#extension {
-  width: 250px;
-}
-
-#specialty {
-  width: 500px !important;
-}
-
-#specialty-line {
-  width: 502px;
-}
-
-#yearsPracticing {
-  width: 232px;
-}
-
-select {
-  width: 240px !important;
+.full-wide {
+  width: 400px !important;
 }
 
 /****************/
@@ -580,6 +611,7 @@ select {
 
 .schedule-button {
   font-family: "Muli", sans-serif;
+  font-weight: 600;
   font-weight: 600;
   font-size: 16px;
   color: var(--blue);
@@ -768,7 +800,6 @@ select {
   border-radius: 5px;
   font-family: "Muli", sans-serif;
   font-size: 14px;
-  color: var(--darkGrey);
   outline: none;
   padding: 10px;
   resize: none;
@@ -819,6 +850,7 @@ select {
 
 .cancel-button {
   font-size: 16px;
+  font-weight: 600;
   font-family: "Muli";
   color: var(--blue);
   width: 100px;
@@ -839,4 +871,5 @@ select {
   border-radius: 45px;
   cursor: pointer;
   outline: none;
+  border: none;
 }

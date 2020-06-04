@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -7,14 +8,6 @@ import * as serviceWorker from './serviceWorker';
 import authReducer from './state/Reducers';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
-
-import express from 'express';
- 
-const app = express();
- 
-app.listen(3000, () =>
-  console.log('Example app listening on port 3000!'),
-);
 
 const store = createStore(authReducer);
 
