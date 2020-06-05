@@ -18,36 +18,30 @@ let insurances = data.insurances
 
 function ProviderOnboarding(props) {
     let submit = props.submit;
-    let id = props.id;
     const [insuranceNum, toggleInsurance] = useState([0])
     const [error, toggleError] = useState()
     const { register, handleSubmit, watch, errors } = useForm();
     const onSubmit = async (data) => {
-        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
-        let response = await fetch(serverAddress + "/session/onboard/provider", { //if development, localhost. if production, real domain name
+        const requestHeaders = {
+            Accept: 'application/json',  
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Method': 'POST',
+        }
+        let response = await fetch(serverAddress + "/session/onboard/provider", { //onboard/provider if development, localhost. if production, real domain name
                 method: 'POST',
                 credentials: 'include',
+                mode: 'cors',
                 headers: requestHeaders, 
                 body: JSON.stringify(data)
             });
         if (response.status === 200) {
-            submit() //edit this
+            console.log("success")
+            // submit() //edit this
         } else {
             let object = await response.json()
-            toggleError(object.error)
+            console.log(object.error)
+            // toggleError(object.error)
         }
-        // let insuranceData = []
-        // Object.entries(data).forEach(entry => {
-        //     if (insuranceData != null && entry[0].includes("insuranceProvider")) {
-        //         if (entry[1] === "No Insurance Accepted") {
-        //             insuranceData = null
-        //         } else if (entry[1] !== "DEFAULT") {
-        //             insuranceData.push(entry[1])
-        //         }
-        //     }
-        // })
-        // data.insurances = insuranceData
-        
     } 
 
     let notDefault = (value) => {
@@ -120,65 +114,45 @@ function ProviderOnboarding(props) {
 
 function PatientOnboarding(props) {
     let submit = props.submit;
-    let id = props.id;
-    const { register, handleSubmit, watch, errors } = useForm();
-    const onSubmit = (data) => {
-        data.dob = date;
-        data.providers = [];
-        data.practices = [];
-        data.user_id = id;
-        data.accountType = "patient";
-        data.insurance = [];
-        if (insurance >= 1) {
-            data.insurance.push({
-                provider: data.insuranceProvider,
-                policy: data.insurancePolicy,
-                group: data.insuranceGroup,
-                firstName: data.insuranceFirstName,
-                lastName: data.insuranceLastName,
-                dob: insuranceDate,
-                SSN: data.insuranceSSN
-            })
-            delete data.insuranceProvider
-            delete data.insurancePolicy
-            delete data.insuranceGroup
-            delete data.insuranceFirstName
-            delete data.insuranceLastName
-            delete data.insuranceDate
-            delete data.insuranceSSN
-            if (insurance >= 2) {
-                data.insurance.push({
-                    provider: data.insuranceProvider2,
-                    policy: data.insurancePolicy2,
-                    group: data.insuranceGroup2,
-                    firstName: data.insuranceFirstName2,
-                    lastName: data.insuranceLastName2,
-                    dob: insuranceDate2,
-                    SSN: data.insuranceSSN2
-                })
-                delete data.insuranceProvider2
-                delete data.insurancePolicy2
-                delete data.insuranceGroup2
-                delete data.insuranceFirstName2
-                delete data.insuranceLastName2
-                delete data.insuranceDate2
-                delete data.insuranceSSN2
-            }
-        }
-        console.log(data) //remove later
-        patientCollection.insertOne(data)
-        .then(result => {
-            submit()
-            console.log(`Successfully inserted item with _id: ${result.insertedId}`)
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    } 
+    const [error, toggleError] = useState()
     const [date, setDate] = useState()
     const [insuranceDate, setInsuranceDate] = useState()
     const [insuranceDate2, setInsuranceDate2] = useState()
     const [insurance, toggleInsurance] = useState(0)
+    const { register, handleSubmit, watch, errors } = useForm();
+    const onSubmit = async (data) => {
+        data.dob = date.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
+            .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+        if (insuranceDate) {
+            data.insuranceDob = insuranceDate.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+        }
+        if (insuranceDate2) {
+            data.insuranceDob2 = insuranceDate2.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+        }
+        console.log(data) //remove later
+        const requestHeaders = {
+            Accept: 'application/json',  
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Method': 'POST',
+        }
+        let response = await fetch(serverAddress + "/session/onboard/patient", { //onboard/provider if development, localhost. if production, real domain name
+                method: 'POST',
+                credentials: 'include',
+                mode: 'cors',
+                headers: requestHeaders, 
+                body: JSON.stringify(data)
+            });
+        if (response.status === 200) {
+            console.log("success")
+            // submit() //edit this
+        } else {
+            let object = await response.json()
+            console.log(object.error)
+            toggleError(object.error)
+        }
+    } 
 
     let notDefault = (value) => {
         if (value === "DEFAULT") return false;
@@ -244,7 +218,7 @@ function PatientOnboarding(props) {
                     <DatePicker date={insuranceDate} onDateChange={setInsuranceDate} locale={enUS}>
                     {({ inputProps, focused }) => ( 
                         <input
-                        name="dob"
+                        name="insuranceDob"
                         className={'onboarding-input input' + (focused ? ' -focused' : '') + (errors.dob ? ' red' : '')}
                         {...inputProps}
                         ref={register({ required: true})}
@@ -273,7 +247,7 @@ function PatientOnboarding(props) {
                     <DatePicker date={insuranceDate2} onDateChange={setInsuranceDate2} locale={enUS}>
                     {({ inputProps, focused }) => ( 
                         <input
-                        name="dob"
+                        name="insuranceDob2"
                         className={'onboarding-input input' + (focused ? ' -focused' : '') + (errors.dob ? ' red' : '')}
                         {...inputProps}
                         ref={register({ required: true})}
@@ -286,6 +260,7 @@ function PatientOnboarding(props) {
                         <p id="add-insurance">Delete this insurance</p>
                     </span>
                 </div>)}
+                {error && <p className="login-text login-centered red-words">{error}</p>}
                 <button className="login-button" type="submit">Submit</button>
             </form>
         </div>
@@ -307,6 +282,34 @@ export default function Onboarding(props) {
         history.replace(from)
     }
 
+    const onSubmit = async () => {
+        const requestHeaders = {
+            Accept: 'application/json',  
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Method': 'POST',
+        }
+        let response = await fetch(serverAddress + "/session/onboard/provider", { //onboard/provider if development, localhost. if production, real domain name
+                method: 'POST',
+                credentials: 'include',
+                mode: 'cors',
+                headers: requestHeaders, 
+            });
+        if (response.status === 200) {
+            let object = await response.json()
+            console.log(object.id)
+            console.log("success")
+        } else {
+            let object = await response.json()
+            console.log(object.error)
+        }
+    } 
+    return (
+        <div>
+            <h1>What's up!</h1>
+            <button onClick={onSubmit}>click me!!!</button>
+        </div>
+        
+    )
     if (props.type === "patient") {
         return (
             <PatientOnboarding submit={update}/>

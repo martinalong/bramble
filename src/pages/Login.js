@@ -17,9 +17,15 @@ function SignupForm(props) {
     const onSubmit = async (data) => {
         const {email, password, type} = data
         let person = { email, password, type }
-        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
+        const requestHeaders = {
+            Accept: 'application/json',  
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Method': 'POST'
+        }
         let response = await fetch(serverAddress + "/session/register", { //if development, localhost. if production, real domain name
                 method: 'POST',
+                credentials: 'include',
+                mode: 'cors',
                 headers: requestHeaders, 
                 body: JSON.stringify(person)
             });

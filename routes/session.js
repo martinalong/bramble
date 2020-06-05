@@ -3,6 +3,7 @@ import express from 'express'
 import bcrypt from 'bcrypt'
 import knex from '../index.js'
 import sgMail from '@sendgrid/mail'
+import middleware from './Middleware.js'
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -24,8 +25,13 @@ router.post('/login', (req, res) => {
                     if (result) {
                         req.session.user = user.id
                         req.session.type = user.type
+                        
+                        console.log(req.sessionID)
+                        console.log(req.session.user)
+                        console.log(req.session.type)
+                        res.status(200).send({type: user.type})
                         req.session.save()
-                        return res.status(200).send({type: user.type})
+                        return
                     }
                     return res.status(401).send({error: "Those account details don't match our records"})
                 })
@@ -52,9 +58,9 @@ router.post('/register', (req, res) => {
                         password: hash,
                         type: type
                     }).then((id) => {
-                        req.session.user = id[0] //logging in. is this all there is to logging in?
+                        req.session.user = id[0] 
                         req.session.type = type
-                        req.session.save()
+                        // req.session.save()
                         // return res.status(200).send({user: req.session.user, type: req.session.type})
                         return res.sendStatus(200)
                         // const msg = {
@@ -84,16 +90,12 @@ router.post('/register', (req, res) => {
     }
 });
 
-router.post('/onboard/provider', (req, res) => {
+router.post('/onboard/provider', middleware.authMiddleware, (req, res) => {
+    //check if there is already a practice like this, then reject it
     //later, account for adding existing practice instead of new one
     //add logo later
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000")
-    res.setHeader("Access-Control-Allow-Credentials", true)
-    if (!req.session.user) {
-        //"It looks like you aren't currently logged in. Please log in to fill out this form"
-        return res.status(400).send({error: req.session.user})
-    } else if (req.session.type !== "provider") {
-        return res.status(400).send({error: "You are currently signed in as a patient. Please sign up at bramble.care/onboarding/patient instead"})
+    if (req.session.type !== "provider") {
+        return res.status(400).send({error: "You are not authenticated as a provider"})
     }
     let insuranceData = []
     Object.entries(req.body).forEach(entry => {
@@ -106,7 +108,7 @@ router.post('/onboard/provider', (req, res) => {
         }
     })
     knex("practice").returning("id").insert({
-        admins: [],
+        admins: [req.session.user],
         name: req.body.practiceName,
         phone: req.body.practicePhoneNumber,
         ext: req.body.practiceExtension,
@@ -117,7 +119,7 @@ router.post('/onboard/provider', (req, res) => {
         zip: req.body.practiceZip,
         insurances: insuranceData
     }).then((practice_id) => {
-        knex("provider").returning(["practice", "id"]).insert({
+        knex("provider").insert({
             id: req.session.user,
             first_name: req.body.firstName,
             last_name: req.body.lastName,
@@ -126,20 +128,76 @@ router.post('/onboard/provider', (req, res) => {
             gender: req.body.sex,
             phone: req.body.phoneNumber,
             ext: req.body.extension,
-            practice: practice_id
-        }).then((practice_id, provider_id) => {
-            knex("practice")
-            .where("id", practice_id)
-            .update({
-                admins: [...admins, provider_id]
-            }).catch(() => {return res.status(422).send({error: "1 We're currently experiencing issues. Please try again later"})})
-        }).catch(() => {return res.status(422).send({error: "2 We're currently experiencing issues. Please try again later"})})
-    }).catch(() => {return res.status(422).send({error: "3 We're currently experiencing issues. Please try again later"})})
+            practice: practice_id[0] //returns as an array
+        }).then(() => {
+            return res.sendStatus(200)
+        }).catch((err) => {
+            knex('practice')
+                .where('admins', [req.session.user])
+                .del()
+            return res.status(422).send({error: "It looks like you've already filled out this form"})
+        })
+    }).catch(() => {return res.status(422).send({error: "We're currently experiencing issues. Please try again later"})})
 });
 
-router.post('/onboard/patient', (req, res) => {
-    const {email, password} = req.body
-   
+router.post('/onboard/patient', middleware.authMiddleware, async (req, res) => {
+    if (req.session.type !== "patient") {
+        return res.status(400).send({error: "You are not authenticated as a patient"})
+    }
+    knex("patient").insert({
+        id: req.session.user,
+        first_name: req.body.firstName,
+        last_name: req.body.lastName,
+        dob: req.body.dob,
+        gender: req.body.sex,
+        phone: req.body.phoneNumber,
+        address: req.body.address,
+        address2: req.body.address2,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip
+    }).then(() => {
+        if (req.body.insuranceProvider) {
+            knex("insurance").insert({
+                patient: req.session.user,
+                plan_provider: req.body.insuranceProvider,
+                policy_num: req.body.insurancePolicy,
+                group_num: req.body.insuranceGroup,
+                first_name: req.body.insuranceFirstName,
+                last_name: req.body.insuranceLastName,
+                dob: req.body.insuranceDob,
+                ssn: req.body.insuranceSSN
+            }).catch((err) => {
+                return res.status(400).send({error: "Please make sure the primary insurance information is filled out correctly"})
+            })
+        }
+    }).then(() => {
+        if (req.body.insuranceProvider2) {
+            knex("insurance").insert({
+                patient: req.session.user,
+                plan_provider: req.body.insuranceProvider2,
+                policy_num: req.body.insurancePolicy2,
+                group_num: req.body.insuranceGroup2,
+                first_name: req.body.insuranceFirstName2,
+                last_name: req.body.insuranceLastName2,
+                dob: req.body.insuranceDob2,
+                ssn: req.body.insuranceSSN2
+            }).catch((err) => {
+                return res.status(400).send({error: "Please make sure the secondary insurance information is filled out correctly"})
+            })
+        }
+    }).catch((err) => {
+        knex('patient')
+            .where('id', req.session.user)
+            .del()
+        knex('insurance')
+            .where('patient', req.session.user)
+            .del()//delete if not all went through
+        return res.status(400).send({error: "Please make sure the patient information is filled out correctly"})
+    })
+    
+    
+    
 });
 
 router.post('/changepw', (req, res) => {
