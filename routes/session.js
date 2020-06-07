@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
     res.send("YOUR EXPRESS BACKEND IS CONNECTED TO REACT on page session");
   });
 
-//rate limit on server and client side as well. express library for the server side one
 router.post('/login', (req, res) => {
     const {email, password} = req.body
     if (email && email.length && password && password.length) { 
@@ -25,19 +24,13 @@ router.post('/login', (req, res) => {
                     if (result) {
                         req.session.user = user.id
                         req.session.type = user.type
-                        
-                        console.log(req.sessionID)
-                        console.log(req.session.user)
-                        console.log(req.session.type)
-                        res.status(200).send({type: user.type})
-                        req.session.save()
-                        return
+                        return res.status(200).send({type: user.type})
                     }
                     return res.status(401).send({error: "Those account details don't match our records"})
                 })
             }
         }).catch((err) => {
-            return res.status(500).send({error: "We're currently experiencing issues. Please try again later"})
+            return res.status(500).send({error: err})
         })
     } else {
         return res.status(411).send({error: "Incomplete email or password"});
@@ -60,8 +53,6 @@ router.post('/register', (req, res) => {
                     }).then((id) => {
                         req.session.user = id[0] 
                         req.session.type = type
-                        // req.session.save()
-                        // return res.status(200).send({user: req.session.user, type: req.session.type})
                         return res.sendStatus(200)
                         // const msg = {
                         //     to: email,
@@ -90,12 +81,16 @@ router.post('/register', (req, res) => {
     }
 });
 
-router.post('/onboard/provider', middleware.authMiddleware, (req, res) => {
+router.post('/onboard/provider', middleware.authMiddleware, async (req, res) => {
     //check if there is already a practice like this, then reject it
     //later, account for adding existing practice instead of new one
-    //add logo later
+    //add logo and image of self later
     if (req.session.type !== "provider") {
         return res.status(400).send({error: "You are not authenticated as a provider"})
+    }
+    let existingUser = await knex("provider").where({"id": req.session.user}).first("id")
+    if (existingUser) {
+        return res.status(409).send({error: "You've already filled out this form"})
     }
     let insuranceData = []
     Object.entries(req.body).forEach(entry => {
@@ -107,97 +102,98 @@ router.post('/onboard/provider', middleware.authMiddleware, (req, res) => {
             }
         }
     })
-    knex("practice").returning("id").insert({
-        admins: [req.session.user],
-        name: req.body.practiceName,
-        phone: req.body.practicePhoneNumber,
-        ext: req.body.practiceExtension,
-        address: req.body.practiceAddress,
-        address2: req.body.practiceAddress2,
-        city: req.body.practiceCity,
-        state: req.body.practiceState,
-        zip: req.body.practiceZip,
-        insurances: insuranceData
-    }).then((practice_id) => {
-        knex("provider").insert({
-            id: req.session.user,
-            first_name: req.body.firstName,
-            last_name: req.body.lastName,
-            specialty: req.body.specialty,
-            practicing_since: req.body.practicingSince,
-            gender: req.body.sex,
-            phone: req.body.phoneNumber,
-            ext: req.body.extension,
-            practice: practice_id[0] //returns as an array
-        }).then(() => {
+    knex.transaction(async (trx) => {
+        try {
+            let practiceId = await trx("practice").returning("id").insert({
+                admins: [req.session.user],
+                name: req.body.practiceName,
+                phone: req.body.practicePhoneNumber,
+                ext: req.body.practiceExtension,
+                address: req.body.practiceAddress,
+                address2: req.body.practiceAddress2,
+                city: req.body.practiceCity,
+                state: req.body.practiceState,
+                zip: req.body.practiceZip,
+                insurances: insuranceData
+            })
+            await trx("provider").insert({
+                id: req.session.user,
+                first_name: req.body.firstName,
+                last_name: req.body.lastName,
+                specialty: req.body.specialty,
+                practicing_since: req.body.practicingSince,
+                gender: req.body.sex,
+                phone: req.body.phoneNumber,
+                ext: req.body.extension,
+                practice: practiceId[0] //returns as an array
+            })
             return res.sendStatus(200)
-        }).catch((err) => {
-            knex('practice')
-                .where('admins', [req.session.user])
-                .del()
-            return res.status(422).send({error: "It looks like you've already filled out this form"})
-        })
-    }).catch(() => {return res.status(422).send({error: "We're currently experiencing issues. Please try again later"})})
+        } catch (err) {
+            console.log(err)
+            return res.status(400).send({error: "Please make sure all fields are filled out correctly"})
+        };
+    })
 });
 
 router.post('/onboard/patient', middleware.authMiddleware, async (req, res) => {
     if (req.session.type !== "patient") {
         return res.status(400).send({error: "You are not authenticated as a patient"})
     }
-    knex("patient").insert({
-        id: req.session.user,
-        first_name: req.body.firstName,
-        last_name: req.body.lastName,
-        dob: req.body.dob,
-        gender: req.body.sex,
-        phone: req.body.phoneNumber,
-        address: req.body.address,
-        address2: req.body.address2,
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip
-    }).then(() => {
-        if (req.body.insuranceProvider) {
-            knex("insurance").insert({
-                patient: req.session.user,
-                plan_provider: req.body.insuranceProvider,
-                policy_num: req.body.insurancePolicy,
-                group_num: req.body.insuranceGroup,
-                first_name: req.body.insuranceFirstName,
-                last_name: req.body.insuranceLastName,
-                dob: req.body.insuranceDob,
-                ssn: req.body.insuranceSSN
-            }).catch((err) => {
-                return res.status(400).send({error: "Please make sure the primary insurance information is filled out correctly"})
+    let existingUser = await knex("patient").where({"id": req.session.user}).first("id")
+    if (existingUser) {
+        return res.status(409).send({error: "You've already filled out this form"})
+    }
+    knex.transaction(async (trx) => {
+        try {
+            await trx("patient").insert({
+                id: req.session.user,
+                first_name: req.body.firstName,
+                last_name: req.body.lastName,
+                dob: req.body.dob,
+                gender: req.body.sex,
+                phone: req.body.phoneNumber,
+                address: req.body.address,
+                address2: req.body.address2,
+                city: req.body.city,
+                state: req.body.state,
+                zip: req.body.zip
             })
-        }
-    }).then(() => {
-        if (req.body.insuranceProvider2) {
-            knex("insurance").insert({
-                patient: req.session.user,
-                plan_provider: req.body.insuranceProvider2,
-                policy_num: req.body.insurancePolicy2,
-                group_num: req.body.insuranceGroup2,
-                first_name: req.body.insuranceFirstName2,
-                last_name: req.body.insuranceLastName2,
-                dob: req.body.insuranceDob2,
-                ssn: req.body.insuranceSSN2
-            }).catch((err) => {
-                return res.status(400).send({error: "Please make sure the secondary insurance information is filled out correctly"})
-            })
-        }
-    }).catch((err) => {
-        knex('patient')
-            .where('id', req.session.user)
-            .del()
-        knex('insurance')
-            .where('patient', req.session.user)
-            .del()//delete if not all went through
-        return res.status(400).send({error: "Please make sure the patient information is filled out correctly"})
+            if (req.body.insuranceProvider) {
+                await trx("insurance").insert({
+                    patient: req.session.user,
+                    plan_provider: req.body.insuranceProvider,
+                    policy_num: req.body.insurancePolicy,
+                    group_num: req.body.insuranceGroup,
+                    first_name: req.body.insuranceFirstName,
+                    last_name: req.body.insuranceLastName,
+                    dob: req.body.insuranceDob,
+                    ssn: req.body.insuranceSSN
+                })
+                // .catch((err) => {
+                //     return res.status(400).send({error: "Please make sure the primary insurance information is filled out correctly"})
+                // })
+            }
+            if (req.body.insuranceProvider2) {
+                await trx("insurance").insert({
+                    patient: req.session.user,
+                    plan_provider: req.body.insuranceProvider2,
+                    policy_num: req.body.insurancePolicy2,
+                    group_num: req.body.insuranceGroup2,
+                    first_name: req.body.insuranceFirstName2,
+                    last_name: req.body.insuranceLastName2,
+                    dob: req.body.insuranceDob2,
+                    ssn: req.body.insuranceSSN2
+                })
+                // .catch((err) => {
+                //     return res.status(400).send({error: "Please make sure the secondary insurance information is filled out correctly"})
+                // })
+            }
+            return res.sendStatus(200)
+        } catch (err) {
+            console.log(err)
+            return res.status(400).send({error: "Please make sure all fields are filled out correctly"})
+        };
     })
-    
-    
-    
 });
 
 router.post('/changepw', (req, res) => {

@@ -1,11 +1,11 @@
-let states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 
+export let states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 
 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 
 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 
 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 
 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 
 'West Virginia', 'Wisconsin', 'Wyoming'];
 
-let specialties = ["Acupuncturist", "Allergist", "Anesthesiologist", "Audiologist", "Bariatric Physician", 
+export let specialties = ["Acupuncturist", "Allergist", "Anesthesiologist", "Audiologist", "Bariatric Physician", 
 "Cardiac Electrophysiologist", "Cardiologist", "Cardiothoracic Surgeon", "Chiropractor", "Colorectal Surgeon", 
 "Dentist", "Dermatologist", "Dietitian", "Ear, Nose & Throat Doctor", "Emergency Medicine Physician", "Endocrinologist", 
 "Endodontist", "Family Physician", "Gastroenterologist", "Geneticist", "Geriatrician", "Hand Surgeon", "Hematologist", 
@@ -20,7 +20,7 @@ let specialties = ["Acupuncturist", "Allergist", "Anesthesiologist", "Audiologis
 "Surgical Oncologist", "Travel Medicine Specialist", "Urgent Care Specialist", "Urological Surgeon", "Urologist", 
 "Vascular Surgeon"]
 
-let insurances = ["Aetna", "Cigna", "HAP (Health Alliance Plan)", "Medicaid", "Medicare", "Molina Healthcare", "UnitedHealthcare",
+export let insurances = ["Aetna", "Cigna", "HAP (Health Alliance Plan)", "Medicaid", "Medicare", "Molina Healthcare", "UnitedHealthcare",
 "1199SEIU", "1st Agency", "20/20 Eyecare Plan", "AARP", "ACE", "AIG", "APWU", "ATRIO Health Plans", 
 "AVMA Life", "Absolute Total Care", "Access Medicare (NY)", "Accountable Health Plan of Ohio", "Advanced Health", "AdvantageMD", 
 "Advantica", "Advent Health", "Adventist Health", "Advocate Health Care", "Aetna", "Aetna Better Health", "Affinity Health Plan", 
@@ -172,6 +172,4 @@ let insurances = ["Aetna", "Cigna", "HAP (Health Alliance Plan)", "Medicaid", "M
 "West Virginia Senior Advantage", "Western Health Advantage", "Willamette Valley Community Health", "Workers' Compensation", 
 "Yamhill Community Care Organization", "Zenith"]
 
-export default {
-    states, specialties, insurances
-}
+export default states

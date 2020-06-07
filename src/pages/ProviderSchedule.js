@@ -8,6 +8,7 @@ import {
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import { FiCheck, FiMinus, FiPlus, FiInfo, FiXCircle } from 'react-icons/fi'
+import { useForm } from "react-hook-form";
 
 function AppointmentTypeWidget(props) {
     let deleteField = props.deleteField
@@ -122,31 +123,12 @@ class ScheduleCreator extends Component {
         this.addField = this.addField.bind(this)
         this.deleteField = this.deleteField.bind(this)
         this.setDays = this.setDays.bind(this)
-        // this.setAvailability = this.setAvailability.bind(this)
         this.state = {
             days: [-1,-1,-1,-1,-1,-1,-1],
-            // availability: [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set()],
             availabilities: [0],
             appointments: [0, 1],
         }
 
-    }
-
-    //credentials: where you'd put a cookie
-    async componentDidMount() {
-        let person = {
-            email: "max@gmail.com", 
-            password: "secret"
-        }
-        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
-        let response = await fetch("http://localhost:5000/login", { //if development, localhost. if production, real domain name
-            method: 'POST',
-            headers: requestHeaders,
-            body: JSON.stringify(person)
-        });
-        let data = await response.json();  
-        console.log("got here") 
-        console.log(data)
     }
 
     days() {

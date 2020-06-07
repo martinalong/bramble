@@ -1,4 +1,3 @@
-import cors from 'cors';
 import routes from './routes/index.js' 
 import 'dotenv/config.js'
 import bodyParser from 'body-parser'
@@ -35,12 +34,7 @@ app.use(bodyParser.json())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(middleware.CORS);
-// app.use(cors());
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-  }))
+app.use(middleware.CORS);
 
 app.use(session({
   secret: process.env.SESSION_SECRET,

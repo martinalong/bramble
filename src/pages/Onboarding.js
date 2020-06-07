@@ -1,46 +1,31 @@
 import React, { Component, useState } from 'react'
-import 'dotenv/config.js'
 import { FiMinus, FiPlus, FiInfo } from 'react-icons/fi'
 import {useHistory, Redirect} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux';
-import { patientCollection, providerCollection, practiceCollection } from '../App.js'
 import { useForm } from "react-hook-form";
 import { enUS } from 'date-fns/locale'
 import { DatePicker } from 'react-nice-dates'
 import 'react-nice-dates/build/style.css'
-import data from '../data.js'
-
-let serverAddress = "http://localhost:5000"
-
-let states = data.states
-let specialties = data.specialties
-let insurances = data.insurances
+import { states, specialties, insurances } from '../data.js'
+import instance from '../helpers.js'
 
 function ProviderOnboarding(props) {
     let submit = props.submit;
     const [insuranceNum, toggleInsurance] = useState([0])
     const [error, toggleError] = useState()
     const { register, handleSubmit, watch, errors } = useForm();
+
     const onSubmit = async (data) => {
-        const requestHeaders = {
-            Accept: 'application/json',  
-            'Content-Type': 'application/json',
-            'Access-Control-Request-Method': 'POST',
-        }
-        let response = await fetch(serverAddress + "/session/onboard/provider", { //onboard/provider if development, localhost. if production, real domain name
-                method: 'POST',
-                credentials: 'include',
-                mode: 'cors',
-                headers: requestHeaders, 
-                body: JSON.stringify(data)
-            });
+        let response = await instance({
+            method: 'post',
+            url: "/session/onboard/provider",
+            data: data
+          });
         if (response.status === 200) {
             console.log("success")
-            // submit() //edit this
+            submit()
         } else {
-            let object = await response.json()
-            console.log(object.error)
-            // toggleError(object.error)
+            toggleError(response.error)
         }
     } 
 
@@ -120,6 +105,7 @@ function PatientOnboarding(props) {
     const [insuranceDate2, setInsuranceDate2] = useState()
     const [insurance, toggleInsurance] = useState(0)
     const { register, handleSubmit, watch, errors } = useForm();
+
     const onSubmit = async (data) => {
         data.dob = date.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
             .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
@@ -131,28 +117,18 @@ function PatientOnboarding(props) {
             data.insuranceDob2 = insuranceDate2.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
                 .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
         }
-        console.log(data) //remove later
-        const requestHeaders = {
-            Accept: 'application/json',  
-            'Content-Type': 'application/json',
-            'Access-Control-Request-Method': 'POST',
-        }
-        let response = await fetch(serverAddress + "/session/onboard/patient", { //onboard/provider if development, localhost. if production, real domain name
-                method: 'POST',
-                credentials: 'include',
-                mode: 'cors',
-                headers: requestHeaders, 
-                body: JSON.stringify(data)
-            });
+        let response = await instance({
+            method: 'post',
+            url: "/session/onboard/patient",
+            data: data
+          });
         if (response.status === 200) {
             console.log("success")
-            // submit() //edit this
+            submit()
         } else {
-            let object = await response.json()
-            console.log(object.error)
-            toggleError(object.error)
+            toggleError(response.error)
         }
-    } 
+    }
 
     let notDefault = (value) => {
         if (value === "DEFAULT") return false;
@@ -270,46 +246,12 @@ function PatientOnboarding(props) {
 
 export default function Onboarding(props) {
     let history = useHistory();
-    const dispatch = useDispatch();
     let from = { pathname: "/dashboard" }
 
     let update = () => {
-        // (patientCollection.findOne({"user_id": props.auth}))
-        // .then(info => {
-        //     console.log("[MongoDB Stitch] Connected to Stitch. Onboarded")
-        //     dispatch({type: "LOGIN", auth: props.auth, info: info})
-        // })
         history.replace(from)
     }
 
-    const onSubmit = async () => {
-        const requestHeaders = {
-            Accept: 'application/json',  
-            'Content-Type': 'application/json',
-            'Access-Control-Request-Method': 'POST',
-        }
-        let response = await fetch(serverAddress + "/session/onboard/provider", { //onboard/provider if development, localhost. if production, real domain name
-                method: 'POST',
-                credentials: 'include',
-                mode: 'cors',
-                headers: requestHeaders, 
-            });
-        if (response.status === 200) {
-            let object = await response.json()
-            console.log(object.id)
-            console.log("success")
-        } else {
-            let object = await response.json()
-            console.log(object.error)
-        }
-    } 
-    return (
-        <div>
-            <h1>What's up!</h1>
-            <button onClick={onSubmit}>click me!!!</button>
-        </div>
-        
-    )
     if (props.type === "patient") {
         return (
             <PatientOnboarding submit={update}/>

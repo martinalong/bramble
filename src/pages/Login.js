@@ -3,8 +3,8 @@ import { FiEye, FiEyeOff } from 'react-icons/fi'
 import {useDispatch} from 'react-redux';
 import {useHistory, useLocation, Link} from 'react-router-dom'
 import { useForm } from "react-hook-form";
-
-let serverAddress = "http://localhost:5000"
+import serverAddress from '../helpers.js'
+import instance from '../helpers.js'
 
 function SignupForm(props) {
     let submit = props.submit
@@ -17,23 +17,20 @@ function SignupForm(props) {
     const onSubmit = async (data) => {
         const {email, password, type} = data
         let person = { email, password, type }
-        const requestHeaders = {
-            Accept: 'application/json',  
-            'Content-Type': 'application/json',
-            'Access-Control-Request-Method': 'POST'
-        }
-        let response = await fetch(serverAddress + "/session/register", { //if development, localhost. if production, real domain name
-                method: 'POST',
-                credentials: 'include',
-                mode: 'cors',
-                headers: requestHeaders, 
-                body: JSON.stringify(person)
+        try {
+            await instance({
+                method: 'post',
+                url: "/session/register",
+                data: person
             });
-        if (response.status === 200) {
             submit(type, "/onboarding/" + type)
-        } else {
-            let object = await response.json()
-            toggleError(object.error)
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data.error);
+                toggleError(error.response.data.error)
+            } else {
+                toggleError("We're having issues connecting right now")
+            }
         }
     } 
     
@@ -94,30 +91,30 @@ function SignupForm(props) {
 function LoginForm(props) {
     let submit = props.submit 
     const { register, handleSubmit, errors } = useForm();
-    const onSubmit = async (data) => {
-        let person = { 
-            email: data.email, 
-            password: data.password 
-        }
-        const requestHeaders = {Accept: 'application/json',  'Content-Type': 'application/json',}
-        
-        let response = await fetch(serverAddress + "/session/login", {
-                method: 'POST',
-                headers: requestHeaders, 
-                body: JSON.stringify(person)
-            });
-        if (response.status === 200) {
-            console.log("success")
-            let object = await response.json()
-            submit(object.type)
-        } else {
-            let object = await response.json()
-            toggleError(object.error)
-        }
-    } 
     let [showPw, toggleShow] = useState(false)
     let [error, toggleError] = useState()
 
+    const onSubmit = async (data) => {
+        try {
+            let response = await instance({
+                method: 'post',
+                url: "/session/login",
+                data: {
+                    email: data.email, 
+                    password: data.password 
+                }
+              });
+            console.log("success")
+            submit(response.data.type)
+        } catch (error) {
+            if (error.response) {
+                toggleError(error.response.data.error)
+            } else {
+                toggleError("We're having issues connecting right now")
+            }
+        }
+    } 
+    
     return (
         <div className="page">
             <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
@@ -167,8 +164,8 @@ export default function Login(props) {
 
     let login = (type) => {
         dispatch({type: "LOGIN", accountType: type}) 
-        history.replace({ pathname: "/onboarding/provider" })
-        // history.replace(from)
+        // history.replace({ pathname: "/onboarding/provider" })
+        history.replace(from)
     }
 
     let register = (type, path) => {
