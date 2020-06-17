@@ -1,15 +1,13 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
 import {useDispatch} from 'react-redux';
 import {useHistory, useLocation, Link} from 'react-router-dom'
 import { useForm } from "react-hook-form";
-import serverAddress from '../helpers.js'
 import instance from '../helpers.js'
 
 function SignupForm(props) {
     let submit = props.submit
     let [showPw, toggleShow] = useState(false)
-    let [completed, markCompleted] = useState(false)
     let [error, toggleError] = useState()
     let [showAlert, toggleAlert] = useState(false)
     const { register, handleSubmit, errors } = useForm();

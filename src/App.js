@@ -30,7 +30,12 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Navbar/>
+        {/* <Navbar/> */}
+        <Switch>
+         <Route exact path="/appointments">
+          </Route>
+          <Route component={Navbar}/>
+        </Switch>
         <Switch>
 
           <Route exact path="/">
@@ -88,7 +93,7 @@ function App() {
 
           <Route component={Error}/>
         </Switch>
-        <Footer/>
+        {/* <Footer/> */}
       </Router>
     </div>
   )

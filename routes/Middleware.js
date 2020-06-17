@@ -21,7 +21,29 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
+const providerMiddleware = (req, res, next) => {
+    if (req.session.type === "provider") {
+        next();
+    } else {
+        return res.status(403).send({
+            error: 'You are not signed in as a provider',
+        });
+    }
+};
+
+const patientMiddleware = (req, res, next) => {
+    if (req.session.type === "patient") {
+        next();
+    } else {
+        return res.status(403).send({
+            error: 'You are not signed in as a patient',
+        });
+    }
+};
+
 export default {
     authMiddleware,
+    patientMiddleware,
+    providerMiddleware,
     CORS
 }

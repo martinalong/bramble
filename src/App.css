@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Muli:wght@400;600&display=swap');
+@import './Fonts/fonts.css';
 
 :root {
   --primaryColor: #F56666;
@@ -7,6 +8,21 @@
   --grey: #f0f1f5;
   --pink: #ec6b66;
   --blue: #424e88;
+  /*calendar colors*/
+  --lightpurple: #f3ebf5;
+  --darkpurple: #b05dc7;
+  --lightviolet: #eceafd;
+  --darkviolet: #6c5cc8;
+  --lightblue: #e1e9f7;
+  --darkblue: #5f88cf;
+  --lightgreen: #DFF8F5;
+  --darkgreen: #61c2c2;
+  --lightpink: #FBE6E7;
+  --darkpink: #DA7B80;
+  --lightorange: #fcebe1;
+  --darkorange: #f57931;
+  --lightblack: #e6e6e6;
+  --darkblack: #7a7a7a;
 }
 
 body {
@@ -26,7 +42,6 @@ input {
 .page {
   position: relative;
   top: 70px;
-  height: 1000px;
   background-color: var(--grey);
 }
 
@@ -60,6 +75,13 @@ input {
   border-bottom: solid 1px transparent;
 }
 
+.hide-nav {
+  display: none;
+  pointer-events: none;
+  border-style: solid;
+  opacity: 0;
+}
+
 .nav-link-underline {
   border-bottom: solid 1px var(--darkGrey);
 }
@@ -88,8 +110,10 @@ input {
   display: grid;
   align-items: center;
   grid-template-columns: 1fr 7fr;
-  padding: 10px 15vw;
+  padding: 5px 5%;
   background-color: var(--grey);
+  height: 40px;
+  width: 90%;
   z-index: 2;
 }
 
@@ -102,11 +126,13 @@ input {
 
 .nav-logo {
   height: 30px;
+  height: 25px;
   margin-right: 20px;
 }
 
 .nav-name {
   height: 27px;
+  height: 20px;
   margin-right: 20px;
 }
 
@@ -178,10 +204,6 @@ input {
   left: 17px;
   top: 5px;
   font-size: 14px;
-}
-
-.red-words {
-  color: var(--primaryColor);
 }
 
 .login-icon {
@@ -566,10 +588,6 @@ input[type="checkbox"]:checked:before {
   margin-top: 10px;
 }
 
-.red {
-  border: 1px solid var(--primaryColor);
-}
-
 .full-wide {
   width: 400px !important;
 }
@@ -670,6 +688,31 @@ input[type="checkbox"]:checked:before {
   color: var(--darkGrey);
   font-size: 16px;
 }
+
+.schedule-error {
+  font-family: "Muli", sans-serif;
+  color: var(--primaryColor);
+  font-size: 16px;
+  margin: 0 auto;
+  position: relative;
+  top: 30px;
+}
+
+/* #day-error {
+  margin: auto;
+  position: relative;
+  top: 30px;
+}
+
+#overlap-error {
+  position: relative;
+  bottom: 50px;
+}
+
+#order-error {
+  position: relative;
+  bottom: 50px;
+} */
 
 #from {
   position: relative;
@@ -872,4 +915,656 @@ input[type="checkbox"]:checked:before {
   cursor: pointer;
   outline: none;
   border: none;
+}
+
+.red-words {
+  color: var(--primaryColor) !important;
+}
+
+.red {
+  border: 1px solid var(--primaryColor) !important;
+}
+
+.red-curved {
+  border-radius: 5px !important;
+  border: 1px solid var(--primaryColor)!important;
+}
+
+/****************/
+/*** CALENDAR ***/
+/****************/
+
+.cal-page {
+  position: absolute;
+  top: 0px;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+  overflow: hidden;
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: 50px repeat(7, 1fr);
+  grid-column-gap: 10px;
+  margin-right: 20px;
+  justify-items: center;
+}
+
+.cal-top {
+  height: 80px;
+}
+
+.week-view-cont {
+  height: 90vh;
+  width: 100vw;
+  overflow-y: auto;
+  border-top: 1px solid #EAEAEA;
+  position: relative;
+}
+
+.week-view {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  grid-column-gap: 10px;
+}
+
+.week-view-events {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(48, 30px);
+  grid-column-gap: 10px;
+  margin-right: 20px;
+}
+
+.week-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+}
+
+.week-padding {
+  margin: 0 20px 0 60px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(96, 15px);
+  grid-column-gap: 10px;
+}
+
+.cal-times {
+  position: relative;
+  top: 55px;
+  text-align: end;
+}
+
+.cal-weekday {
+  font-family: "Maison Neue", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--mediumGrey);
+}
+
+.cal-hour {
+  height: 59px;
+  border-bottom: 1px solid transparent;
+  font-family: "Maison Neue", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--mediumGrey);
+}
+
+.cal-no-box {
+  height: 30px;
+  z-index: 2;
+}
+
+.cal-box {
+  height: 29px;
+  border-bottom: 1px solid #EAEAEA;
+  z-index: 2;
+}
+
+.grey-background {
+  background-color: #f7f7f7;
+}
+
+.cal-month {
+  margin-top: 20px;
+  font-family: "Maison Neue", sans-serif;
+  font-size: 22px;
+  color: var(--darkGrey);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.cal-current-month {
+  display: inline-block;
+  margin: 0;
+}
+
+.cal-top-right {
+  justify-self: end;
+  margin-right: 30px;
+}
+
+.cal-jump {
+  font-family: "Maison Neue", sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  padding: 5px 10px;
+  padding-top: 7px;
+  color: var(--darkGrey);
+  border: 1px solid #BBBBBB;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 0;
+  margin-left: 20px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.cal-jump:hover {
+  background-color: #EEEEEE;
+}
+
+.cal-select-jump {
+  font-family: "Maison Neue", sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  padding: 5px 10px;
+  padding-top: 7px;
+  color: var(--darkGrey);
+  border: 1px solid #BBBBBB;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 0;
+  margin-left: 20px;
+  height: 29px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cal-select-jump:hover {
+  background-color: #EEEEEE;
+}
+
+.cal-selection-jump {
+  border-radius: 5px 0px 0px 5px;
+  width: 143px;
+  position: absolute;
+  left: 0;
+  background-color: white;
+}
+
+#cal-chevron-down {
+  color: var(--darkGrey);
+  font-size: 18px;
+  border: 1px solid var(--darkGrey);
+  border-radius: 0px 5px 5px 0px;
+  padding-bottom: 5px;
+  padding-top: 7px;
+  height: 15px;
+  position: relative;
+  top: 9px;
+  right: 1px;
+}
+
+.cal-arrows {
+  margin-right: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cal-menu {
+  font-size: 24px;
+  position: relative;
+  top: 3px;
+  color: #C4C4C4;
+  margin: 0 25px 0 30px;
+  padding-right: 25px;
+  border-right: 1px solid #EAEAEA;
+  cursor: pointer;
+}
+
+.cal-arrow {
+  font-size: 24px;
+  color: #BBBBBB;
+  position: relative;
+  top: 3px;
+  margin: 0 5px;
+}
+
+.cal-floating-icons {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 3;
+}
+
+.cal-icon-container {
+  height: 50px;
+  width: 50px;
+  border: 1px solid #EEEEEE;
+  border-radius: 50%;
+  box-shadow: 0 1px 1px 0 rgba(0,0,0,0.14), 0 2px 1px -1px rgba(0,0,0,0.12), 0 1px 3px 0 rgba(0,0,0,0.2);
+  cursor: pointer;
+  background-color: white;
+  margin: 10px;
+  /* display: inline-block; */
+}
+
+.cal-icon-container:hover {
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12);
+}
+
+#add-event {
+  color: var(--darkGrey);
+  font-size: 28px;
+  height: 30px;
+  width: 30px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#edit-cal {
+  color: var(--darkGrey);
+  font-size: 22px;
+  height: 24px;
+  width: 24px;
+  margin-top: 13px;
+  margin-left: 13px;
+}
+
+#cal-add-cont {
+  position: relative;
+  top: 3px;
+}
+
+.event {
+  z-index: 4;
+  font-family: "Maison Neue", sans-serif;
+  margin: 0;
+  position: relative;
+  bottom: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 20px;
+  cursor: pointer;
+}
+
+.event-person {
+  font-weight: bold;
+  font-size: 14px;
+  margin: 5px 5px 0px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-type {
+  font-weight: normal;
+  font-size: 14px;
+  margin: 5px 5px 0px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pink {
+  background-color: var(--lightpink);
+  box-shadow: inset 4px 0px 0px 0px var(--darkpink);
+  /* color: var(--darkpink); */
+  color: var(--darkGrey);
+}
+
+.purple {
+  background-color: var(--lightpurple);
+  box-shadow: inset 4px 0px 0px 0px var(--darkpurple);
+  /* color: var(--darkpurple); */
+  color: var(--darkGrey);
+}
+
+.green {
+  background-color: var(--lightgreen);
+  box-shadow: inset 4px 0px 0px 0px var(--darkgreen);
+  /* color: var(--darkgreen); */
+  color: var(--darkGrey);
+}
+
+.violet {
+  background-color: var(--lightviolet);
+  box-shadow: inset 4px 0px 0px 0px var(--darkviolet);
+  /* color: var(--darkviolet); */
+  color: var(--darkGrey);
+}
+
+.blue {
+  background-color: var(--lightblue);
+  box-shadow: inset 4px 0px 0px 0px var(--darkblue);
+  /* color: var(--darkblue); */
+  color: var(--darkGrey);
+}
+
+.orange {
+  background-color: var(--lightorange);
+  box-shadow: inset 4px 0px 0px 0px var(--darkorange);
+  /* color: var(--darkorange); */
+  color: var(--darkGrey);
+}
+
+.black {
+  background-color: var(--lightblack);
+  box-shadow: inset 4px 0px 0px 0px var(--darkblack);
+  /* color: var(--darkviolet); */
+  color: var(--darkGrey);
+}
+
+.appt-type-option {
+  box-shadow: none;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 500px;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.sidebar-selected {
+  border: 1px solid var(--darkGrey);
+}
+
+.timeline {
+  z-index: 3;
+  position: absolute;
+  left: 0;
+  border-bottom: 1px solid var(--primaryColor);
+  width: 100vw;
+}
+
+.timeline::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  border-radius: 7.5px;
+  position: absolute;
+  top: -7.5px;
+  left: -7.5px;
+  display: inline-block;
+  background-color: var(--primaryColor);
+}
+
+.sidebar-page {
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+}
+
+.sidebar-smoke {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+.sidebar-panel {
+  background-color: white;
+  box-shadow: -5px 0px 15px 0px rgba(0,0,0,0.14);
+  position: relative;
+}
+
+.sidebar-icon {
+  font-size: 24px;
+  color: #C4C4C4;
+  cursor: pointer;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-family: "Maison Neue", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--darkGrey);
+}
+
+.sidebar-top {
+  height: 80px;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  align-items: center;
+  justify-items: center;
+}
+
+.sidebar-headers {
+  font-family: "Maison Neue", sans-serif;
+  font-weight: bold;
+  color: var(--darkGrey);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+}
+
+.sidebar-header {
+  font-size: 16px;
+  text-align: center;
+  padding-bottom: 20px;
+  width: 100%;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+
+.light-underline {
+  color: #AAAAAA;
+  border-color: #EEEEEE;
+}
+
+.sidebar-details {
+  color: var(--darkGrey);
+  font-size: 16px;
+  margin: 10px 50px;
+}
+
+.cal-search-box {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #BBBBBB;
+  width: 100%;
+}
+
+.cal-search-result {
+  font-family: "Maison Neue", sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.cal-search-result:hover {
+  background-color: #EEEEEE;
+}
+
+.cal-search-name {
+  display: inline-block;
+  margin: 5px 10px;
+}
+
+.cal-search-dob {
+  display: inline-block;
+  justify-self: end;
+  margin: 5px 10px;
+}
+
+.sidebar-time-section {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  align-items: center;
+  justify-content: start;
+  margin: 0;
+}
+
+.sidebar-text {
+  font-family: "Maison Neue", sans-serif;
+}
+
+.sidebar-dash {
+  justify-self: center;
+  margin: 0 10px;
+  width: 20px;
+  height: 1px;
+  border-bottom: 2px solid var(--darkGrey);
+  position: relative;
+  bottom: 2px;
+}
+
+.sidebar-time {
+  font-weight: bold;
+  color: var(--darkGrey);
+  font-family: "Maison Neue", sans-serif;
+  margin: 0;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.sidebar-datetime {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#left {
+  justify-self: start;
+}
+
+#right {
+  justify-self: end;
+}
+
+.sidebar-date {
+  margin: 5px 0;
+}
+
+.sidebar-name {
+  font-family: "Maison Neue", sans-serif !important;
+  font-size: 20px;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.sidebar-type {
+  margin: 0;
+}
+
+.sidebar-divider {
+  border-bottom: 1px solid #EEEEEE;
+  padding: 20px 0px;
+}
+
+.sidebar-notes {
+  margin: 30px 0px;
+}
+
+.sidebar-picker {
+  margin: 0;
+  width: 100%;
+}
+
+#sidebar-date-text {
+  margin: 0;
+  padding-top: 6px;
+}
+
+.date-picker {
+  padding-top: 20px !important;
+  position: relative;
+  bottom: 24px;
+  margin-bottom: -24px !important;
+  cursor: pointer;
+}
+
+#sidebar-time-section {
+  margin-left: 20px;
+  font-weight: bold;
+  justify-self: end;
+  align-self: center;
+}
+
+#sidebar-time-section .MuiInputBase-root {
+  font-weight: bold;
+}
+
+#sidebar-time-section input {
+  text-align: end !important;
+  cursor: pointer;
+}
+
+.sidebar-picker > .MuiInputBase-root {
+  background-color: transparent;
+  border-radius: 0px;
+  font-family: "Maison Neue", sans-serif !important;
+  font-size: 16px;
+  padding: 2px 0px 2px 0px;
+  color: var(--darkGrey);
+  cursor: pointer;
+}
+
+.sidebar-picker .MuiInputBase-input {
+  padding-bottom: 0 !important;
+  cursor: pointer;
+}
+
+.sidebar-form-text {
+  font-family: "Maison Neue", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #AAAAAA;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.sidebar-edit-datetime {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: start;
+}
+
+.sidebar-textarea {
+  width: 100%;
+  resize: none;
+  border: none;
+  font-family: "Maison Neue", sans-serif;
+  font-size: 16px;
+  padding: 0;
+  outline: none;
+}
+
+.sidebar-name-input {
+  width: 100%;
+  display: block;
+  border: none;
+  font-family: "Maison Neue", sans-serif !important;
+  font-size: 20px;
+  font-weight: normal;
+  padding: 2px 0px 2px 0px;
+  margin: 10px 0px;
+  color: var(--darkGrey);
+}
+
+.sidebar-error {
+  font-size: 16px;
+  padding: 5px 0;
+  color: var(--primaryColor);
+}
+
+#sidebar-delete {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+}
+
+.input-filled {
+  font-weight: bold;
 }

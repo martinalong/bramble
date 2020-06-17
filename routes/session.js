@@ -81,13 +81,10 @@ router.post('/register', (req, res) => {
     }
 });
 
-router.post('/onboard/provider', middleware.authMiddleware, async (req, res) => {
+router.post('/onboard/provider', [middleware.authMiddleware, middleware.providerMiddleware], async (req, res) => {
     //check if there is already a practice like this, then reject it
     //later, account for adding existing practice instead of new one
     //add logo and image of self later
-    if (req.session.type !== "provider") {
-        return res.status(400).send({error: "You are not authenticated as a provider"})
-    }
     let existingUser = await knex("provider").where({"id": req.session.user}).first("id")
     if (existingUser) {
         return res.status(409).send({error: "You've already filled out this form"})
@@ -135,10 +132,7 @@ router.post('/onboard/provider', middleware.authMiddleware, async (req, res) => 
     })
 });
 
-router.post('/onboard/patient', middleware.authMiddleware, async (req, res) => {
-    if (req.session.type !== "patient") {
-        return res.status(400).send({error: "You are not authenticated as a patient"})
-    }
+router.post('/onboard/patient', [middleware.authMiddleware, middleware.patientMiddleware], async (req, res) => {
     let existingUser = await knex("patient").where({"id": req.session.user}).first("id")
     if (existingUser) {
         return res.status(409).send({error: "You've already filled out this form"})

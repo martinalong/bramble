@@ -16,16 +16,20 @@ function ProviderOnboarding(props) {
     const { register, handleSubmit, watch, errors } = useForm();
 
     const onSubmit = async (data) => {
-        let response = await instance({
-            method: 'post',
-            url: "/session/onboard/provider",
-            data: data
-          });
-        if (response.status === 200) {
-            console.log("success")
+        try {
+            await instance({
+                method: 'post',
+                url: "/session/onboard/provider",
+                data: data
+              });
             submit()
-        } else {
-            toggleError(response.error)
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data.error);
+                toggleError(error.response.data.error)
+            } else {
+                toggleError("We're having issues connecting right now")
+            }
         }
     } 
 
@@ -117,16 +121,20 @@ function PatientOnboarding(props) {
             data.insuranceDob2 = insuranceDate2.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'})
                 .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
         }
-        let response = await instance({
-            method: 'post',
-            url: "/session/onboard/patient",
-            data: data
-          });
-        if (response.status === 200) {
-            console.log("success")
+        try {
+            await instance({
+                method: 'post',
+                url: "/session/onboard/patient",
+                data: data
+              });
             submit()
-        } else {
-            toggleError(response.error)
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data.error);
+                toggleError(error.response.data.error)
+            } else {
+                toggleError("We're having issues connecting right now")
+            }
         }
     }
 
