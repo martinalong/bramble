@@ -48,17 +48,19 @@ The web-portal is currently in progress, and an app is on the roadmap for future
 - Integration with pharmacies for prescribing
 - Integration with patient charts (e.g. Elation)
 
+## Sample Images
+
+**Calendar View**
 ![Calendar](/demo_images/calendar.png)
-Calendar View
 
+**Calendar Event View**
 ![Calendar Sidebar](/demo_images/calendarSidebar.png)
-Calendar Event View
 
+**Patient Signup**
 ![Patient Signup](/demo_images/patientSignup.png)
-Patient Signup
 
+**Provider Signup**
 ![Provider Signup](/demo_images/providerSignup.png)
-Provider Signup
 
+**Provider Schedule Editing**
 ![Provider Scheduling](/demo_images/providerScheduling.png)
-Provider Schedule Editing
