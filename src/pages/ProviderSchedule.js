@@ -245,6 +245,7 @@ export default class ProviderSchedule extends Component {
     
     async componentDidMount() {
         document.getElementById("week-view-cont").scrollTop = 480
+        let edit = false
         try {
             let apptResponse = await instance({
                 method: 'post',
@@ -258,10 +259,11 @@ export default class ProviderSchedule extends Component {
                 method: 'get',
                 url: "/schedule/provider/appt-types",
             });
-            if (apptTypeResponse.length === 0) { //if haven't filled out the form yet
-                this.setState({edit: true})
+            console.log(apptTypeResponse)
+            if (apptTypeResponse.data.apptTypes.length === 0) { //if haven't filled out the form yet
+                edit = true
             }
-            this.setState({appts: apptResponse.data.appts, apptTypes: apptTypeResponse.data.apptTypes})
+            this.setState({appts: apptResponse.data.appts, apptTypes: apptTypeResponse.data.apptTypes, edit})
         } catch (error) {
             if (error.response) {
                 console.log(error.response.data.error);
