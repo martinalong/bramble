@@ -49,7 +49,12 @@ The web-portal is currently in progress, and an app is on the roadmap for future
 - Integration with patient charts (e.g. Elation)
 
 ![Calendar](/demo_images/calendar.png)
+Format: ![Calendar View]
 ![Calendar Sidebar](/demo_images/calendarSidebar.png)
+Format: ![Calendar Event View]
 ![Patient Signup](/demo_images/patientSignup.png)
+Format: ![Patient Signup]
 ![Provider Signup](/demo_images/providerSignup.png)
-![Provider SSchedulingignup](/demo_images/providerScheduling.png)
+Format: ![Provider Signup]
+![Provider Scheduling](/demo_images/providerScheduling.png)
+Format: ![Provider Schedule Editing]
