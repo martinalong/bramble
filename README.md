@@ -1,68 +1,49 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Bramble
 
-In the project directory, you can run:
+Doctor's office apps have dramatically improved the healthcare experience for patients of companies like One Medical and Forward. However, the vast majority of doctors offices are small practices that cannot reasonably afford to develop an app of their own. Bramble is an open source app and website that offers any doctor the opportunity to provide their patients that same seamless healthcare experience, regardless of practice size.
 
-### `npm start`
+### Features for Patients
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- One app for all your doctors: Instead of multiple fragmented portals with different logins, have all your doctors in one place and only enter your information once
+- No more phone calls or mail: Communicating with your doctor and paying bills no longer needs to be a game of phone-tag, with the ability to message asynchronously in-app, save your insurance and payment information, and auto-pay. Receive bills as a pdf that you can reference at any time instead of by snail-mail that quickly gets lost.
+- Greater access to doctors: Many brief but important questions go unasked because they would otherwise require patients to schedule another appointment. With messaging, these questions can be answered and patients can be one step closer to truly preventative care.
+- Transparent availability: Know exactly which times are available to schedule and reschedule with ease and without needing to make a call.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### Features for Providers
 
-### `npm test`
+Bramble can immediately elevate any doctor's office to a 21st century healthcare facility, with more seamless communication, easy payment processing, and appointment scheduling.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Save administrative time: Patients can now schedule and reschedule appointments, update their insurance, and make payments without calling in
+- Increase payment rates: A large part of why many medical bills go unpaid isn't lack of funds, but purely the friction involved in doing so. Patients are more likely to pay their bill on time when they can do so in-app with a credit card than if they had to send in a check or give their card information over the phone.
+- Inter-office communication: With many doctors all on one app, inter-office communication can finally do away with faxes and emails. Messaging between practices can be used to send requests for patient files or to send patient referrals
+- Intelligent scheduling: Bramble minimizes the number of small gaps in your schedule to help you make the most of your time
+- No more "ships passing in the night" communication fumbles: Instead of playing phone-tag with patients and leaving long messages that may not be heard, messaging allows doctors offices to work asynchronously from when patients are available to answer their phone.
 
-### `npm run build`
+## Roadmap
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The web-portal is currently in progress, and an app is on the roadmap for future development. When completed, the website will be launched on http://bramble.care/
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Completed
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Login & Authentication
+- Patient & provider onboarding
+- Provider scheduling
 
-### `npm run eject`
+### In progress
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Patient scheduling
+- Messaging
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Future
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- iOS and Android app
+- In-app payments
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Long term 
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- Video telehealth
+- Integration with alto
+- Integration with lenders like Klarna to pay medical bills
+- Integration with pharmacies for prescribing
+- Integration with patient charts (e.g. Elation)
