@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from 'react'
 import ScheduleCreator from './ScheduleCreator.js'
 import moment from 'moment'
 import instance from '../helpers'
+import hash from 'object-hash'
 import { FiChevronLeft, FiChevronRight, FiMenu, FiX, FiEdit2, FiCheck, FiPlus} from 'react-icons/fi'
 import {
   DatePicker,
@@ -50,7 +51,7 @@ function Sidebar(props) {
                 try {
                     let response = await instance({
                         method: 'get',
-                        url: "/schedule/provider/patient/" + eventTitle,
+                        url: "/user/provider/patient/" + eventTitle,
                     });
                     setPatients(response.data.patients)
                 } catch (error) {
@@ -88,6 +89,7 @@ function Sidebar(props) {
             console.log(err)
         } finally {
             props.close()
+            props.fetchEvents(false)
         }
     }
     let submit = async () => {
@@ -127,7 +129,6 @@ function Sidebar(props) {
             }
             method = 'put'
         }
-        console.log(obj)
         try {
             if (Object.keys(obj).length > 1) {
                 await instance({
@@ -144,6 +145,7 @@ function Sidebar(props) {
             }
         } finally {
             props.close()
+            props.fetchEvents(false)
         }
     }
     let apptTypes = (props.apptTypes).map(type => (
@@ -223,6 +225,7 @@ export default class ProviderSchedule extends Component {
         this.addEvent = this.addEvent.bind(this)
         this.openEvent = this.openEvent.bind(this)
         this.toggleNav = this.toggleNav.bind(this)
+        this.fetchEvents = this.fetchEvents.bind(this)
         this.state = {
             edit: false,
             view: "week", //"week", "day", "month"
@@ -233,6 +236,7 @@ export default class ProviderSchedule extends Component {
             range: this.updateRange(moment()),
             nav: false,
             jump: [1, "month"],
+            timeRetrieved: null
         }
         this.morning = ([...Array(11).keys()]).map(hour => <div key={hour + 1} className="cal-hour">{hour + 1} AM</div>)
         this.afternoon = ([11, ...Array(11).keys()]).map(hour => <div key={hour + 1} className="cal-hour">{hour + 1} PM</div>)
@@ -243,33 +247,73 @@ export default class ProviderSchedule extends Component {
             }}>{unit[0]} {unit[1] + (unit[0] > 1 ? "s" : "")} from now</option>)
     }
     
-    async componentDidMount() {
+    componentDidMount() {
         document.getElementById("week-view-cont").scrollTop = 480
-        let edit = false
+        this.fetchAppts()
+        this.interval = setInterval(() => this.fetchEvents(true), 300000) //every 5 minutes 
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval) 
+    }
+
+    //check = true for periodic updates when range has not changed (so don't send unnecessary data)
+    //check = false when know an event has changed or the date range changes
+    //if the range changed, must do check = false (aka retieve new data). The validation methods don't apply if the time range changes
+    async fetchEvents(check) {
+        //save here the last retrieval time (sent by the response along with the data)
+        //in the table, save the time any time something is updated or created
+        //time retrieved is set by the client side, so that it errs on teh side of early (so if a concurrent call is received, it'll then be caught next time)
+        //the current time is picked BEFORE creating the commit
+        //this way, if another person submits something around the same time, it'll be considered "after" probably so it won't be lost in the refresh
+        //server checks if any that fit the criteria with a edit date after the provided edit date, or if the length is diff
+        //if delete one and add one, length same, but edit date will catch the difference
+        //server just sends response with no data if nothing changed. Sends response with data if changed
+        //if client receives data, updates the appt list
+        //don't need to send any hashes over this way or to hash every time
+        let data
+        if (check) {
+            data = {
+                start_date: this.state.range[0],
+                end_date: this.state.range[this.state.range.length - 1].add(1, "day"),
+                check: true,
+                timeRetrieved: this.state.timeRetrieved,
+                len: this.state.appts.length
+            }
+        } else {
+            data = {
+                start_date: this.state.range[0],
+                end_date: this.state.range[this.state.range.length - 1].add(1, "day"),
+                check: false
+            }
+        }
         try {
-            let apptResponse = await instance({
+            let response = await instance({
                 method: 'post',
                 url: "/schedule/provider/appt-times/",
-                data: {
-                    start_date: this.state.range[0],
-                    end_date: this.state.range[this.state.range.length - 1].add(1, "day")
-                }
+                data: data
               });
-            let apptTypeResponse = await instance({
+            if (response.data && response.data.appts) {
+                this.setState({appts: response.data.appts, timeRetrieved: moment(response.data.timeRetrieved)})
+            }
+        } catch (error) {
+            console.log("We're having issues connecting right now")
+        }
+    }
+
+    async fetchAppts() {
+        let edit = false
+        try {
+            let response = await instance({
                 method: 'get',
                 url: "/schedule/provider/appt-types",
             });
-            console.log(apptTypeResponse)
-            if (apptTypeResponse.data.apptTypes.length === 0) { //if haven't filled out the form yet
+            if (response.data.apptTypes.length === 0) { //if haven't filled out the form yet
                 edit = true
             }
-            this.setState({appts: apptResponse.data.appts, apptTypes: apptTypeResponse.data.apptTypes, edit})
+            this.setState({apptTypes: response.data.apptTypes, edit}, () => this.fetchEvents(false))
         } catch (error) {
-            if (error.response) {
-                console.log(error.response.data.error);
-            } else {
-                console.log("We're having issues connecting right now")
-            }
+            console.log("We're having issues connecting right now")
         }
     }
 
@@ -307,20 +351,24 @@ export default class ProviderSchedule extends Component {
     // }
 
     jumpToday() {
-        this.setState({
-            current: moment(),
-            range: this.updateRange(moment())
-        })
+        if (!this.state.current.isSame(moment(), this.state.view)) {
+            this.setState({
+                current: moment(),
+                range: this.updateRange(moment())
+            }, () => this.fetchEvents(false))
+        }
     }
 
     //jump to CHANGE number of UNITs from today. From *today*
     jumpRange(change, unit) { //unit = "day", "month", "week" or this.state.view
         let curr = moment().add(change, unit + "s")
-        let range = this.updateRange(curr)
-        this.setState({
-            current: curr, 
-            range
-        })
+        if (!this.state.current.isSame(curr, this.state.view)) {
+            let range = this.updateRange(curr)
+            this.setState({
+                current: curr, 
+                range
+            }, () => this.fetchEvents(false))
+        }
     }
 
     //increment CURRENT view date by one VIEW unit in DIRECTION specified. From *current view date*
@@ -330,7 +378,7 @@ export default class ProviderSchedule extends Component {
         this.setState({
             current: curr, 
             range
-        })
+        }, () => this.fetchEvents(false))
     }
 
     toggleEdit() {
@@ -388,7 +436,7 @@ export default class ProviderSchedule extends Component {
             let mins = Math.floor(end.diff(start, "minutes") / 15) * 15
             return (<div className={"event " + event.color} 
                 onClick={() => this.openEvent(event)}
-                key={event.last_name + event.start_time}
+                key={hash(event)}
                 style={{
                     "height" : mins + "px", 
                     "gridArea" : (4*start.hour() + Math.floor(start.minute() / 15) + 1) + "/" + (start.day() + 1)  + "/" + (4*start.hour() + Math.floor(start.minute() / 15)+ 2) + "/" + (start.day() + 2)
@@ -462,7 +510,7 @@ export default class ProviderSchedule extends Component {
                     <div id="cal-edit-cont" className="cal-icon-container" onClick={this.toggleEdit}><FiEdit2 id="edit-cal"/></div>
                     <div id="cal-add-cont" className="cal-icon-container" onClick={() => this.addEvent(this.state.current.day(), moment().hour(), 0)}><FiPlus id="add-event"/></div>
                 </div>
-                {this.state.sidebar ? <Sidebar input={this.state.sidebar} apptTypes={this.state.apptTypes} close={this.closeSidebar}/> : <div></div>}
+                {this.state.sidebar ? <Sidebar input={this.state.sidebar} apptTypes={this.state.apptTypes} fetchEvents={this.fetchEvents} close={this.closeSidebar}/> : <div></div>}
             </div>
         )
     }

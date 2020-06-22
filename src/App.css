@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Muli:wght@400;600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Muli:wght@400;600&display=swap'); */
 @import './Fonts/fonts.css';
 
 :root {
@@ -23,6 +23,10 @@
   --darkorange: #f57931;
   --lightblack: #e6e6e6;
   --darkblack: #7a7a7a;
+}
+
+h1, h2, h3, p {
+  margin: 0;
 }
 
 body {
@@ -65,7 +69,7 @@ input {
 
 .nav-link {
   color: var(--darkGrey);
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 15px;
   padding: 5px 0;
   margin-left: 30px;
@@ -92,7 +96,7 @@ input {
 }
 
 .nav-button {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 15px;
   transform: scaleY(0.95);
   border: solid 1px var(--darkGrey);
@@ -155,7 +159,7 @@ input {
 }
 
 .login-text {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 14px;
   color: var(--darkGrey);
   margin: 0;
@@ -169,7 +173,7 @@ input {
   background-color: var(--grey);
   border: none;
   border-radius: 5px;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 14px;
   outline: none;
   padding: 10px;
@@ -193,7 +197,7 @@ input {
   bottom: 20px;
   left: 15px;
   font-size: 14px;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   color: var(--darkGrey);
 }
 
@@ -220,7 +224,7 @@ input {
 .login-button {
   font-size: 18px;
   font-weight: 600;
-  font-family: "Muli";
+  font-family: "Maison Neue";
   background-color: var(--blue);
   color: var(--grey);
   width: 90%;
@@ -319,7 +323,7 @@ input {
   background-color: var(--grey);
   border: none;
   border-radius: 5px;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 16px;
   outline: none;
   padding: 10px;
@@ -327,7 +331,7 @@ input {
 }
 
 .onboarding-text {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 16px;
   color: var(--darkGrey);
   margin: 0;
@@ -368,7 +372,7 @@ input {
 .login-dropdown {
   height: 40px;
   outline: none;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 16px;
   padding: 0 5px;
   border: none;
@@ -473,7 +477,7 @@ input {
 #add-insurance {
   margin-left: 10px;
   font-size: 16px;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
 }
 
 #login-plus {
@@ -578,7 +582,7 @@ input[type="checkbox"]:checked:before {
 .input {
   border-style: none;
   font-size: 16px;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   width: 175px;
   height: 20px;
   margin-right: auto;
@@ -628,7 +632,7 @@ input[type="checkbox"]:checked:before {
 }
 
 .schedule-button {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-weight: 600;
   font-weight: 600;
   font-size: 16px;
@@ -661,14 +665,14 @@ input[type="checkbox"]:checked:before {
 }
 
 .schedule-title {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   color: var(--darkGrey);
   font-size: 18px;
   margin-left: 15px;
 }
 
 .schedule-add-text {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   color: var(--blue);
   font-size: 16px;
   cursor: pointer;
@@ -684,13 +688,13 @@ input[type="checkbox"]:checked:before {
 }
 
 .schedule-text {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   color: var(--darkGrey);
   font-size: 16px;
 }
 
 .schedule-error {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   color: var(--primaryColor);
   font-size: 16px;
   margin: 0 auto;
@@ -753,13 +757,13 @@ input[type="checkbox"]:checked:before {
 }
 
 .schedule-header {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 18px;
   color: var(--mediumGrey);
 }
 
 .schedule-button-day {
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 18px;
   width: 1em;
   height: 1em;
@@ -785,7 +789,7 @@ input[type="checkbox"]:checked:before {
 .MuiInputBase-root {
   background-color: var(--grey);
   border-radius: 5px;
-  font-family: "Muli", sans-serif !important;
+  font-family: "Maison Neue", sans-serif !important;
   padding: 2px 0px 2px 10px;
 }
 
@@ -802,7 +806,7 @@ input[type="checkbox"]:checked:before {
 }
 
 .MuiFormLabel-root {
-  font-family: "Muli", sans-serif !important;
+  font-family: "Maison Neue", sans-serif !important;
 }
 
 .schedule-available-time {
@@ -841,7 +845,7 @@ input[type="checkbox"]:checked:before {
   background-color: var(--grey);
   border: none;
   border-radius: 5px;
-  font-family: "Muli", sans-serif;
+  font-family: "Maison Neue", sans-serif;
   font-size: 14px;
   outline: none;
   padding: 10px;
@@ -894,7 +898,7 @@ input[type="checkbox"]:checked:before {
 .cancel-button {
   font-size: 16px;
   font-weight: 600;
-  font-family: "Muli";
+  font-family: "Maison Neue";
   color: var(--blue);
   width: 100px;
   height: 45px;
@@ -906,7 +910,7 @@ input[type="checkbox"]:checked:before {
 
 .submit-button {
   font-size: 16px;
-  font-family: "Muli";
+  font-family: "Maison Neue";
   background-color: var(--blue);
   color: var(--grey);
   width: 100px;
@@ -1567,4 +1571,17 @@ input[type="checkbox"]:checked:before {
 
 .input-filled {
   font-weight: bold;
+}
+
+.patient-sched {
+  margin: 0 2vw;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-column-gap: 20px;
+}
+
+.white-box {
+  background-color: white;
+  border-radius: 5px;
+  padding: 20px;
 }

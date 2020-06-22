@@ -15,27 +15,17 @@ import ProviderSchedule from './pages/ProviderSchedule'
 import PatientSchedule from './pages/PatientSchedule'
 import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import {useSelector} from 'react-redux';
-import { Stitch, 
-  RemoteMongoClient
-} from "mongodb-stitch-browser-sdk";
-
-const client = Stitch.initializeDefaultAppClient("bramble-bptsn");
-const mongodb = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
-export const patientCollection = mongodb.db("data").collection("patientCollection");
-export const providerCollection = mongodb.db("data").collection("providerCollection");
-export const practiceCollection = mongodb.db("data").collection("practiceCollection");
-export const appointmentCollection = mongodb.db("data").collection("appointmentCollection");
 
 function App() {
   return (
     <div className="app">
       <Router>
-        {/* <Navbar/> */}
-        <Switch>
+        <Navbar/>
+        {/* <Switch>
          <Route exact path="/appointments">
           </Route>
           <Route component={Navbar}/>
-        </Switch>
+        </Switch> */}
         <Switch>
 
           <Route exact path="/">
@@ -71,7 +61,7 @@ function App() {
           </PrivateRoute>
 
           <Route exact path="/appointments">
-            <ProviderSchedule/>
+            <PatientSchedule/>
           </Route>
 
           {/* <PrivateRoute exact path="/appointments">
