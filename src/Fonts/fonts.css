@@ -88,14 +88,14 @@
 	font-style: italic;
 }*/
 
-/*@font-face {
+@font-face {
 	font-family: 'Maison Neue';
 	src: url('MaisonNeue-Bold.woff2') format('woff2'),
 		url('MaisonNeue-Bold.woff') format('woff'),
 		url('MaisonNeue-Bold.ttf') format('truetype');
 	font-weight: bold;
 	font-style: normal;
-}*/
+}
 
 /*@font-face {
 	font-family: 'Maison Neue';

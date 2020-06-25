@@ -13,6 +13,8 @@ import Doctors from './pages/Doctors'
 import Account from './pages/Account'
 import ProviderSchedule from './pages/ProviderSchedule'
 import PatientSchedule from './pages/PatientSchedule'
+import Booking from './pages/Booking'
+import BookingTimes from './pages/BookingTimes'
 import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import {useSelector} from 'react-redux';
 
@@ -63,6 +65,10 @@ function App() {
           <Route exact path="/appointments">
             <PatientSchedule/>
           </Route>
+
+          <Route exact path="/book/:practice" component={Booking}/>
+
+          <Route exact path="/book/appt/:appttype" component={BookingTimes}/>
 
           {/* <PrivateRoute exact path="/appointments">
             {info.accountType === "patient" ?

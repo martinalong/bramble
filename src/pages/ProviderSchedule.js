@@ -257,20 +257,7 @@ export default class ProviderSchedule extends Component {
         clearInterval(this.interval) 
     }
 
-    //check = true for periodic updates when range has not changed (so don't send unnecessary data)
-    //check = false when know an event has changed or the date range changes
-    //if the range changed, must do check = false (aka retieve new data). The validation methods don't apply if the time range changes
     async fetchEvents(check) {
-        //save here the last retrieval time (sent by the response along with the data)
-        //in the table, save the time any time something is updated or created
-        //time retrieved is set by the client side, so that it errs on teh side of early (so if a concurrent call is received, it'll then be caught next time)
-        //the current time is picked BEFORE creating the commit
-        //this way, if another person submits something around the same time, it'll be considered "after" probably so it won't be lost in the refresh
-        //server checks if any that fit the criteria with a edit date after the provided edit date, or if the length is diff
-        //if delete one and add one, length same, but edit date will catch the difference
-        //server just sends response with no data if nothing changed. Sends response with data if changed
-        //if client receives data, updates the appt list
-        //don't need to send any hashes over this way or to hash every time
         let data
         if (check) {
             data = {

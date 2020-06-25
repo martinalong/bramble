@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../images/logo_brown_red.svg'
+import logo from '../images/logo_brown_yellow.svg'
 import bramble from '../images/bramble_black.svg'
 import { NavLink } from 'react-router-dom'
 import {useSelector} from 'react-redux';
@@ -9,8 +9,8 @@ export default function Navbar() {
     let login = useSelector(state => state.login)
     if (!accountType) {
         return (
-            <div className="nav">
-                <NavLink className="nav-logo-container" to="/">
+            <div id="nav">
+                <NavLink id="nav-logo-container" to="/">
                     <img className="nav-logo" src={logo} alt="bramble logo"/>
                     <img className="nav-name" src={bramble} alt="bramble"/>
                 </NavLink>
@@ -24,8 +24,8 @@ export default function Navbar() {
         )
     }
     return (
-        <div className="nav">
-            <NavLink className="nav-logo-container" to="/dashboard">
+        <div id="nav">
+            <NavLink id="nav-logo-container" to="/dashboard">
                 <img className="nav-logo" src={logo} alt="bramble logo"/>
                 <img className="nav-name" src={bramble} alt="bramble"/>
             </NavLink>
