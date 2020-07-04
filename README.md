@@ -55,13 +55,16 @@ The web-portal is currently in progress, and an app is on the roadmap for future
 **Calendar Event View**
 ![Calendar Sidebar](/demo_images/calendarSidebar.png)
 
+**Communication and Booking**
+![Communication Booking](/demo_images/communicationBooking.png)
+
+**Provider Schedule Editing**
+![Provider Scheduling](/demo_images/providerScheduling.png)
+
 **Patient Signup**
 ![Patient Signup](/demo_images/patientSignup.png)
 
 **Provider Signup**
 ![Provider Signup](/demo_images/providerSignup.png)
 
-**Provider Schedule Editing**
-![Provider Scheduling](/demo_images/providerScheduling.png)
 
-To run in your browser, run "nodemon ." and "npm start"
