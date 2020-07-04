@@ -28,11 +28,37 @@ router.get("/practices/:name", middleware.authMiddleware, async (req, res) => {
   try {
     let practices = await knex('practice')
       .where('name', 'ilike', '%' + req.params.name + '%')
-      .select('id', 'name', 'state')
+      .select('id', 'name', 'logo')
     return res.status(200).send({practices})
   } catch (err) {
     console.log(err)
     res.sendStatus(422)
+  }
+})
+
+//get appointment types for a given practice
+router.get('/practice/appt-types/:id', middleware.authMiddleware, async (req, res) => {
+  try {
+    let types = await knex("appttypes")
+      .where('practice', req.params.id)
+      .select('id', 'name', 'descript')
+    let practice = await knex("practice")
+      .where('id', req.params.id)
+      .first('name')
+    return res.status(200).send({types, name: practice.name})
+  } catch (err) {
+    return res.sendStatus(422)
+  }
+})
+
+router.get('/practice/details/:id', middleware.authMiddleware, async (req, res) => {
+  try {
+    let details = await knex("practice")
+      .where('id', req.params.id)
+      .first('name', 'address', 'address2', 'city', 'state', 'zip', 'insurances', 'phone', 'ext')
+    return res.status(200).send({details})
+  } catch (err) {
+    return res.sendStatus(422)
   }
 })
 

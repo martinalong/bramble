@@ -54,30 +54,25 @@ function App() {
             <Dashboard/>
           </Route>
 
-          <PrivateRoute exact path="/communication">
+          <Route exact path="/communication">
             <Chat/>
-          </PrivateRoute>
+          </Route>
+
+          {/* <PrivateRoute exact path="/communication">
+            <Chat/>
+          </PrivateRoute> */}
 
           <PrivateRoute exact path="/account">
             <Account/>
           </PrivateRoute>
 
-          <Route exact path="/appointments">
-            <PatientSchedule/>
-          </Route>
+          <PrivateRoute exact path="/appointments">
+            <TypeRoute patient={<PatientSchedule/>} provider={<ProviderSchedule/>}/>
+          </PrivateRoute>
 
           <Route exact path="/book/:practice" component={Booking}/>
 
           <Route exact path="/book/appt/:appttype" component={BookingTimes}/>
-
-          {/* <PrivateRoute exact path="/appointments">
-            {info.accountType === "patient" ?
-            <PatientSchedule info={info}/> :
-            info.accountType === "provider" ? 
-            <ProviderSchedule info={info}/> :
-            <Error type="onboarding"/>
-            }
-          </PrivateRoute> */}
 
           <PrivateRoute exact path="/patients">
             <Patients/>
@@ -115,6 +110,23 @@ function PrivateRoute({ children, ...rest }) {
       }
     />
   );
+}
+
+function TypeRoute(props) {
+  let type = useSelector(state => state.accountType)
+  if (type === "patient") {
+    console.log("patient")
+    console.log(props.patient)
+    return (
+      props.patient
+    )
+  } else {
+    console.log("provider")
+    console.log(props.provider)
+    return (
+      props.provider
+    )
+  }
 }
 
 export default App;

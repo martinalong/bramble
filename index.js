@@ -43,7 +43,7 @@ app.use(session({
   resave: false, //whether it saves every request even if nothing has changed (wastes space)
   cookie: {
     httpOnly: false, //client cannot see cookie
-    maxAge: 14400000, //Number(process.env.SESSION_LIFETIME),
+    maxAge: 86400000, //Number(process.env.SESSION_LIFETIME),
     secure: false, //process.env.NODE_ENV === "production"
     sameSite: true //true = only accept cookie if coming from same domain
   }

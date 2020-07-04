@@ -63,3 +63,5 @@ The web-portal is currently in progress, and an app is on the roadmap for future
 
 **Provider Schedule Editing**
 ![Provider Scheduling](/demo_images/providerScheduling.png)
+
+To run in your browser, run "nodemon ." and "npm start"
